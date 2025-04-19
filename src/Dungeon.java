@@ -9,6 +9,10 @@ public class Dungeon {
         this.miestnosti = miestnosti;
     }
 
+    public List<Miestnost> getMiestnosti() {
+        return miestnosti;
+    }
+
     public Miestnost getAktualnaMiestnost() {
         return aktualnaMiestnost;
     }
