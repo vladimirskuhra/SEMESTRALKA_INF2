@@ -5,15 +5,14 @@ public class Hrac extends Charakter {
 
     @Override
     public void utok(Utocnik ciel) {
-        if (inventar.getAktivnaZbran() == null) {
-            System.out.println("Nemáš žiadnu zbraň, útočíš holými rukami!");
-            ciel.prijmiZasah(sila);
+        int damage = sila;
+        if (inventar.getAktivnaZbran() != null) {
+            damage += inventar.getAktivnaZbran().getSila();
+            System.out.println(getMeno() + " útočí so zbraňou " + inventar.getAktivnaZbran().getMeno() + " a spôsobí " + damage + " škody!");
         } else {
-            int damage = inventar.getAktivnaZbran().getSila() + sila;
-            ciel.prijmiZasah(damage);
-            System.out.println(getMeno() + " útočí so zbraňou " + inventar.getAktivnaZbran().getMeno()
-                    + " a spôsobí " + damage + " škody!");
+            System.out.println("Nemáš žiadnu zbraň, útočíš holými rukami a spôsobíš " + damage + " škody!");
         }
+        ciel.prijmiZasah(damage);
     }
 
     @Override

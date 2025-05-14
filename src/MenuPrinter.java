@@ -31,7 +31,7 @@ public class MenuPrinter {
 
         if (!aktualna.getPostavy().isEmpty()) {
             System.out.println("\nV miestnosti sa nachádzajú:");
-            for (NPC postava : aktualna.getPostavy()) {
+            for (Charakter postava : aktualna.getPostavy()) {
                 if (postava.getZdravie() > 0) {
                     System.out.println("- " + postava.getMeno() + ": " + postava.getPopis());
                 }

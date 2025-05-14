@@ -10,12 +10,12 @@ public abstract class NPC extends Charakter {
     }
 
     // Každé NPC musí polymorfne riešiť interakciu s hráčom
-    @Override
+
     public abstract void interakcia(Hrac hrac);
 
     // Ak niektoré NPC vie niečo použiť (napr. elixír na seba), môžeš to tu implementovať,
     // inak nechaj default (nič).
-    @Override
+
     public void pouzitie(Hrac hrac) {
         // Väčšina NPC štandardne nič nepoužíva
     }

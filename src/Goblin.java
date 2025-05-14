@@ -1,87 +1,34 @@
-import javax.swing.text.Position;
 import java.util.Random;
-import java.util.Scanner;
 
-public class Goblin extends NPC {
-    private BattleSystem battleSystem;
-
-    public Goblin(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana);
-        this.battleSystem = battleSystem;
+public class Goblin extends Nepriatel {
+    public Goblin(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana, double sancaNaZastrasenie) {
+        super(id, meno, popis, miestnost, zdravie, sila, obrana, sancaNaZastrasenie);
+        // Môžeš pridať do inventára zbraň/prípadne iné predmety
     }
 
     @Override
     public void interakcia(Hrac hrac) {
         System.out.println(getMeno() + " na teba nepriateľsky zavrčí!");
         System.out.println("Goblin tasí svoju zbraň a chystá sa zaútočiť!");
-
-        System.out.println("\n1. Zaútočiť");
-        System.out.println("2. Pokúsiť sa utiecť");
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Tvoja voľba: ");
-
-        try {
-            int volba = Integer.parseInt(scanner.nextLine());
-
-            switch (volba) {
-                case 1:
-                    this.utok(hrac);
-                    break;
-                case 2:
-                    utekZBoja(hrac);
-                    break;
-                default:
-                    System.out.println("Neplatná voľba. Goblin využíva tvoje zaváhanie!");
-                    this.utok(hrac);
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Neplatná voľba. Goblin využíva tvoje zaváhanie!");
-            this.utok(hrac);
-        }
-    }
-
-    private void utekZBoja(Hrac hrac) {
-        Random random = new Random();
-        int utekHod = random.nextInt(20) + 1;
-
-        System.out.println("Pokúšaš sa utiecť... Hod kockou: " + utekHod);
-
-        if (utekHod > 10) {
-            System.out.println("Podarilo sa ti utiecť pred goblinom!");
-        } else {
-            System.out.println("Goblin ťa dobehol! Útočí na teba!");
-            this.utok(hrac);
-        }
-    }
-
-    @Override
-    public void pouzitie(Hrac hrac) {
-        System.out.println("Nemôžeš použiť goblina ako predmet.");
+        // Tu môže byť logika na spustenie boja mimo tejto triedy, alebo iba info
     }
 
     @Override
     public void utok(Utocnik ciel) {
-        if (ciel instanceof Hrac) {
-            Hrac hrac = (Hrac) ciel;
-            System.out.println(getMeno() + " útočí na teba!");
-            battleSystem.boj(hrac, this);
+        // Goblin útočí, použije aktívnu zbraň ak má, inak základnú silu
+        int damage = sila;
+        if (inventar.getAktivnaZbran() != null) {
+            damage += inventar.getAktivnaZbran().getSila();
+            System.out.println(getMeno() + " útočí so zbraňou " + inventar.getAktivnaZbran().getMeno() + " a spôsobí " + damage + " škody!");
+        } else {
+            System.out.println(getMeno() + " útočí holými rukami a spôsobí " + damage + " škody!");
         }
+        ciel.prijmiZasah(damage);
     }
 
     @Override
     public void obrana() {
         System.out.println(getMeno() + " sa pripravuje na obranu!");
-        // Tu by bola logika pre zvýšenie obrany na jedno kolo
-    }
-
-    @Override
-    public Predmet dropniPredmet() {
-        return super.dropniPredmet();
-    }
-
-    @Override
-    public void zastras(Hrac hrac) {
-        super.zastras(hrac);
+        // Prípadne zvýšenie obrany na jedno kolo
     }
 }

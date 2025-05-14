@@ -10,6 +10,15 @@ public abstract class Nepriatel extends NPC {
         this.sancaNaZastrasenie = sancaNaZastrasenie;
     }
 
+    public void dropDoMiestnosti() {
+        if (miestnost != null && inventar != null) {
+            for (Predmet p : inventar.getPredmety()) {
+                miestnost.pridajPredmet(p);
+            }
+            inventar.getPredmety().clear();
+        }
+    }
+
     public boolean pokusZastrasenie() {
         double hod = Math.random();
         if (hod < sancaNaZastrasenie && !jeOdzbrojeny) {

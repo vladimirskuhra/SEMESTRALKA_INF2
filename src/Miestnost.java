@@ -6,7 +6,7 @@ public class Miestnost {
     private final String meno;
     private final String popis;
     private final boolean jeBezpecna;
-    private final List<NPC> postavy = new ArrayList<>();
+    private final List<Charakter> postavy = new ArrayList<>();
     private final List<Predmet> predmety = new ArrayList<>();
 
     public Miestnost(String id, String meno, String popis, boolean jeBezpecna) {
@@ -21,10 +21,10 @@ public class Miestnost {
     public String getPopis() { return popis; }
     public boolean isBezpecna() { return jeBezpecna; }
 
-    public List<NPC> getPostavy() { return postavy; }
+    public List<Charakter> getPostavy() { return postavy; }
     public List<Predmet> getPredmety() { return predmety; }
 
-    public void pridajPostavu(NPC npc) { postavy.add(npc); }
+    public void pridajPostavu(Charakter postava) { postavy.add(postava); }
     public void pridajPredmet(Predmet p) { predmety.add(p); }
     public void odstranPredmet(Predmet predmet) { predmety.remove(predmet); }
 

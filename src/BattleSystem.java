@@ -10,19 +10,28 @@ public class BattleSystem {
         this.scanner = scanner;
     }
 
-    public void boj(Hrac hrac, Charakter nepriatel) {
+    // Nová metóda pre boj s viacerými nepriateľmi
+    public void boj(Hrac hrac, List<Nepriatel> nepriatelia) {
         System.out.println("\n=== ZAČÍNA BOJ ===");
-        System.out.println("Tvojím súperom je: " + nepriatel.getMeno());
+        System.out.println("Tvojím súperom sú:");
+        for (int i = 0; i < nepriatelia.size(); i++) {
+            System.out.println((i+1) + ". " + nepriatelia.get(i).getMeno());
+        }
 
         boolean bojAktivny = true;
 
-        while (bojAktivny && hrac.getZdravie() > 0 && nepriatel.getZdravie() > 0) {
-            System.out.println("\n" + hrac.getMeno() + ": Zdravie=" + hrac.getZdravie() +
-                    ", " + nepriatel.getMeno() + ": Zdravie=" + nepriatel.getZdravie());
+        while (bojAktivny && hrac.getZdravie() > 0 && !nepriatelia.isEmpty()) {
+            // Výpis stavu
+            System.out.println("\n" + hrac.getMeno() + ": Zdravie=" + hrac.getZdravie());
+            for (int i = 0; i < nepriatelia.size(); i++) {
+                Nepriatel n = nepriatelia.get(i);
+                System.out.println((i+1) + ". " + n.getMeno() + ": Zdravie=" + n.getZdravie());
+            }
 
+            // Hráčova akcia
             System.out.println("\nČo urobíš?");
-            System.out.println("1. Útok");
-            System.out.println("2. Použiť predmet");
+            System.out.println("1. Útok na vybraného nepriateľa");
+            System.out.println("2. Použiť elixír/predmet");
             System.out.println("3. Pokus o útek");
 
             System.out.print("Tvoja voľba: ");
@@ -30,11 +39,24 @@ public class BattleSystem {
 
             switch(volba) {
                 case 1:
-                    vykonajUtokHraca(hrac, nepriatel);
+                    // Výber cieľa útoku
+                    System.out.print("Vyber číslo nepriateľa na útok: ");
+                    int idx = getNumericInput(1, nepriatelia.size()) - 1;
+                    Nepriatel ciel = nepriatelia.get(idx);
+                    hrac.utok(ciel);
+                    if (ciel.getZdravie() <= 0) {
+                        System.out.println(ciel.getMeno() + " bol porazený!");
+                        ciel.dropDoMiestnosti(); // loot
+                        nepriatelia.remove(ciel);
+                        if (nepriatelia.isEmpty()) {
+                            System.out.println("Všetci nepriatelia boli porazení!");
+                            return;
+                        }
+                    }
                     break;
                 case 2:
-                    if (pouzitPredmet(hrac)) {
-                        System.out.println("Použil si predmet.");
+                    if (pouzitLektvar(hrac)) {
+                        System.out.println("Použil si elixír/predmet.");
                     } else {
                         System.out.println("Nevybral si žiadny predmet, strácaš kolo!");
                     }
@@ -42,82 +64,71 @@ public class BattleSystem {
                 case 3:
                     int hodKockou = random.nextInt(20) + 1;
                     if (hodKockou > 10) {
-                        System.out.println("Hod kockou: " + hodKockou + " - Úspešne si utiekol!");
-                        bojAktivny = false;
+                        System.out.println("Úspešne si utiekol!");
                         return;
                     } else {
-                        System.out.println("Hod kockou: " + hodKockou + " - Nepodarilo sa ti utiecť!");
+                        System.out.println("Nepodarilo sa ti utiecť!");
                     }
                     break;
             }
 
-            if (nepriatel.getZdravie() <= 0) {
-                System.out.println("\n" + nepriatel.getMeno() + " bol porazený!");
-                System.out.println("Vyhral si boj!");
-                return;
-            }
-
-            System.out.println("\n" + nepriatel.getMeno() + " útočí!");
-            vykonajUtokNepriatela(nepriatel, hrac);
-
-            if (hrac.getZdravie() <= 0) {
-                System.out.println("\nPadol si v boji!");
-                bojAktivny = false;
+            // Kolo nepriateľov
+            for (int i = 0; i < nepriatelia.size(); i++) {
+                Nepriatel n = nepriatelia.get(i);
+                if (n.getZdravie() > 0) {
+                    nepriatelAIAkcia(n, hrac);
+                    if (hrac.getZdravie() <= 0) {
+                        System.out.println("Padol si v boji!");
+                        return;
+                    }
+                }
             }
         }
     }
 
-    private void vykonajUtokHraca(Hrac hrac, Charakter nepriatel) {
-        int hodKockou = random.nextInt(20) + 1;
-        System.out.println("\nHodil si kockou d20: " + hodKockou);
-
-        if (hodKockou >= 10) {
-            int poskodenie = random.nextInt(8) + 1 + hrac.getSila();
-            int skutocnePoskodenie = Math.max(1, poskodenie - nepriatel.getObrana());
-            System.out.println("Úspešný zásah! Spôsobil si " + skutocnePoskodenie + " bodov poškodenia.");
-            nepriatel.setZdravie(nepriatel.getZdravie() - skutocnePoskodenie);
+    // Ukážková AI rozhodovanie pre nepriateľa
+    private void nepriatelAIAkcia(Nepriatel nepriatel, Hrac hrac) {
+        int akcia = random.nextInt(100);
+        if (nepriatel.getZdravie() < 8 && akcia < 20) { // 20% šanca na útek pri nízkom zdraví
+            System.out.println(nepriatel.getMeno() + " sa pokúša utiecť!");
+            int hod = random.nextInt(20) + 1;
+            if (hod > 12) {
+                System.out.println(nepriatel.getMeno() + " úspešne utiekol!");
+                nepriatel.setZdravie(0); // Simuluj "zmiznutie" z boja
+            } else {
+                System.out.println(nepriatel.getMeno() + " sa pokúsil utiecť, ale nepodarilo sa!");
+                nepriatel.utok(hrac); // aj tak útočí
+            }
+        } else if (akcia < 30) { // 10% šanca na obranu
+            nepriatel.obrana();
         } else {
-            System.out.println("Netrafil si! " + nepriatel.getMeno() + " sa vyhol tvojmu útoku.");
+            nepriatel.utok(hrac); // 70% šanca na útok
         }
     }
 
-    private void vykonajUtokNepriatela(Charakter nepriatel, Hrac hrac) {
-        int hodKockou = random.nextInt(20) + 1;
-        System.out.println(nepriatel.getMeno() + " hodil kockou d20: " + hodKockou);
-
-        if (hodKockou >= 8) {
-            int poskodenie = random.nextInt(6) + 1 + nepriatel.getSila();
-            int skutocnePoskodenie = Math.max(1, poskodenie - hrac.getObrana());
-            System.out.println("Zasiahol ťa! Utrpel si " + skutocnePoskodenie + " bodov poškodenia.");
-            hrac.setZdravie(hrac.getZdravie() - skutocnePoskodenie);
-        } else {
-            System.out.println("Vyhol si sa! " + nepriatel.getMeno() + " ťa netrafil.");
-        }
-    }
-
-    private boolean pouzitPredmet(Hrac hrac) {
+    // Použitie elixíru – hráč si môže vybrať z predmetov, ktoré sú elixíry
+    private boolean pouzitLektvar(Hrac hrac) {
         List<Predmet> predmety = hrac.getInventar().getPredmety();
+        List<Predmet> lektvary = predmety.stream()
+                .filter(p -> p instanceof Lektvar)
+                .toList();
 
-        if (predmety.isEmpty()) {
-            System.out.println("Nemáš žiadne predmety!");
+        if (lektvary.isEmpty()) {
+            System.out.println("Nemáš žiadne lektvary!");
             return false;
         }
 
-        System.out.println("\nKtorý predmet chceš použiť?");
-        for (int i = 0; i < predmety.size(); i++) {
-            System.out.println((i+1) + ". " + predmety.get(i).getMeno());
+        System.out.println("\nKtorý lektvar chceš použiť?");
+        for (int i = 0; i < lektvary.size(); i++) {
+            System.out.println((i+1) + ". " + lektvary.get(i).getMeno());
         }
         System.out.println("0. Späť");
-
         System.out.print("Tvoja voľba: ");
-        int volba = getNumericInput(0, predmety.size());
-
-        if (volba == 0) {
-            return false;
-        }
-
-        Predmet vybranyPredmet = predmety.get(volba - 1);
-        vybranyPredmet.pouzitie(hrac);
+        int volba = getNumericInput(0, lektvary.size());
+        if (volba == 0) return false;
+        Lektvar lektvar = (Lektvar) lektvary.get(volba - 1);
+        lektvar.pouzitie(hrac);
+        // lektvar sa odstráni v pouzitie(), už netreba ručne odstraňovať
         return true;
     }
 
