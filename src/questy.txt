@@ -1,0 +1,21 @@
+názov: Lov goblinov
+popis: Prines 5 gobliních uší.
+predmet: Goblinie ucho
+pocet: 5
+minLevel: 1
+reward: Kvalitný meč
+---
+názov: Pavúčie tesáky
+popis: Prines 3 pavúčie tesáky.
+predmet: Pavúčí tesák
+pocet: 3
+minLevel: 2
+reward: Silný lektvar
+---
+názov: Klin z koruny kráľa
+popis: Prines klin z koruny Goblinieho kráľa.
+predmet: Klin z koruny
+pocet: 1
+minLevel: 5
+reward: Najlepšie brnenie
+---

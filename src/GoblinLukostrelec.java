@@ -1,9 +1,10 @@
 import javax.swing.text.Position;
 import java.util.Random;
+import java.util.Scanner;
 
-public class GoblinLukostrelec extends Charakter {
+public class GoblinLukostrelec extends NPC {
     public GoblinLukostrelec(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana, TypCharakteru.GOBLIN_LUKOSTRELEC);
+        super(id, meno, popis, pozicia, zdravie, sila, obrana);
     }
 
     @Override

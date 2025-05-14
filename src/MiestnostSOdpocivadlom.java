@@ -1,4 +1,5 @@
 import javax.swing.text.Position;
+import java.util.Scanner;
 
 public class MiestnostSOdpocivadlom extends Miestnost {
     public MiestnostSOdpocivadlom(String id, String meno, String popis, Position pozicia) {

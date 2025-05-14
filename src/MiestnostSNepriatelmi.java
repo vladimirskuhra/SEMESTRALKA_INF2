@@ -1,5 +1,6 @@
 import javax.swing.text.Position;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MiestnostSNepriatelmi extends Miestnost {
     public MiestnostSNepriatelmi(String id, String meno, String popis, Position pozicia) {

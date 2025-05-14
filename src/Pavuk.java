@@ -1,9 +1,10 @@
 import javax.swing.text.Position;
 import java.util.Random;
+import java.util.Scanner;
 
-public class Pavuk extends Charakter {
+public class Pavuk extends NPC {
     public Pavuk(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana, TypCharakteru.PAVUK);
+        super(id, meno, popis, pozicia, zdravie, sila, obrana);
     }
 
     @Override

@@ -37,7 +37,7 @@ public class Main {
         String menoHraca = scanner.nextLine();
 
         // Vytvorenie hráča s východzími hodnotami
-        hrac = new Hrac("hrac1", menoHraca, "Odvážny dobrodruh", null, 100, 10, 5, TypCharakteru.HRAC);
+        hrac = new Hrac("hrac1", menoHraca, "Odvážny dobrodruh", null, 100, 10, 5);
 
         // Pridanie základnej výbavy
         Predmet mec = new Zbran("zbran1", "Krátky meč", "Jednoduchý meč", 5);
@@ -76,7 +76,8 @@ public class Main {
 
         Miestnost miestnostSObchodnikom = new MiestnostSObchodnikom("m6", "Gobliní trh",
                 "Prekvapivo, v tejto jaskyni je malý gobliní trh. Jeden z goblinov vyzerá priateľsky.", null);
-        miestnostSObchodnikom.pridajPostavu(new Obchodnik("obchodnik1", "Grumli", "Starší gobliní obchodník", null, 50, 3, 10));
+        QuestDatabaza databaza = new QuestDatabaza("questy.txt");
+        miestnostSObchodnikom.pridajPostavu(new Obchodnik("obchodnik1", "Grumli", "Starší gobliní obchodník", null, 50, 3, 10, databaza));
 
         Miestnost bossovaMiestnost = new MiestnostSNepriatelmi("m7", "Trónna sieň",
                 "Veľká sieň s trónom z kostí. Na tróne sedí Gobliní kráľ, obklopený lukostrelcami.", null);

@@ -1,19 +1,40 @@
 import javax.swing.text.Position;
 
-public abstract class Charakter extends Postava implements Utocnik, Interakcia {
+public abstract class Charakter implements Utocnik, Interakcia {
+    protected String id;
+    protected String meno;
+    protected String popis;
+    protected Position pozicia;
     protected int zdravie;
     protected int sila;
     protected int obrana;
     protected Inventar inventar;
-    protected TypCharakteru typ; // Pridanie typu postavy
 
-    public Charakter(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, TypCharakteru typ) {
-        super(id, meno, popis, pozicia);
+    public Charakter(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+        this.id = id;
+        this.meno = meno;
+        this.popis = popis;
+        this.pozicia = pozicia;
         this.zdravie = zdravie;
         this.sila = sila;
         this.obrana = obrana;
         this.inventar = new Inventar();
-        this.typ = typ; // Inicializácia typu postavy
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getMeno() {
+        return meno;
+    }
+
+    public String getPopis() {
+        return popis;
+    }
+
+    public Position getPozicia() {
+        return pozicia;
     }
 
     public int getZdravie() {
@@ -36,27 +57,20 @@ public abstract class Charakter extends Postava implements Utocnik, Interakcia {
         return inventar;
     }
 
-    public TypCharakteru getTyp() {
-        return typ;
-    }
-
-    @Override
-    public void utok(Utocnik ciel) {
-        // Implementácia útoku
-    }
-
-    @Override
-    public void obrana() {
-        // Implementácia obrany
-    }
-
-    @Override
     public void pohyb(Position novaPozicia) {
         this.pozicia = novaPozicia;
     }
 
+    // Abstraktné metódy na polymorfizmus
     @Override
-    public void interakcia(Hrac hrac) {
-        // Implementácia interakcie
-    }
+    public abstract void interakcia(Hrac hrac);
+
+    @Override
+    public abstract void pouzitie(Hrac hrac);
+
+    @Override
+    public abstract void utok(Utocnik ciel);
+
+    @Override
+    public abstract void obrana();
 }

@@ -2,9 +2,9 @@ import javax.swing.text.Position;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Goblin extends Charakter {
+public class Goblin extends NPC {
     public Goblin(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana, TypCharakteru.GOBLIN);
+        super(id, meno, popis, pozicia, zdravie, sila, obrana);
     }
 
     @Override
@@ -59,12 +59,14 @@ public class Goblin extends Charakter {
 
     @Override
     public void utok(Utocnik ciel) {
+        // Goblin útočí len na hráča
         if (ciel instanceof Hrac) {
             Hrac hrac = (Hrac) ciel;
             System.out.println(getMeno() + " útočí na teba!");
-
-            // Implementácia boja je v Main.bojovySystem
+            // Spustí sa bojový systém
             Main.bojovySystem(hrac, this);
+        } else {
+            // Ak ciel nie je hráč, goblin nič nerobí (alebo môžeme pridať inú logiku)
         }
     }
 
@@ -72,5 +74,15 @@ public class Goblin extends Charakter {
     public void obrana() {
         System.out.println(getMeno() + " sa pripravuje na obranu!");
         // Tu by bola logika pre zvýšenie obrany na jedno kolo
+    }
+
+    @Override
+    public Predmet dropniPredmet() {
+        return super.dropniPredmet();
+    }
+
+    @Override
+    public void zastras(Hrac hrac) {
+        super.zastras(hrac);
     }
 }

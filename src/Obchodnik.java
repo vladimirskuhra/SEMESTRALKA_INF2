@@ -3,13 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Obchodnik extends Charakter {
+public class Obchodnik extends NPC {
     private List<Predmet> tovar;
+    private QuestDatabaza questDatabaza;
 
-    public Obchodnik(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana, TypCharakteru.OBCHODNIK);
+    public Obchodnik(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, QuestDatabaza databaza) {
+        super(id, meno, popis, pozicia, zdravie, sila, obrana);
         this.tovar = new ArrayList<>();
         vytvorTovar();
+        this.questDatabaza = databaza;
     }
 
     private void vytvorTovar() {
@@ -50,7 +52,7 @@ public class Obchodnik extends Charakter {
                         zobrazTovar(hrac);
                         break;
                     case 2:
-                        zobrazUlohy(hrac);
+                        ponukniQuest(hrac);
                         break;
                     case 3:
                         premienanePredmetov(hrac);
@@ -91,30 +93,27 @@ public class Obchodnik extends Charakter {
         if (odpoved.equals("a")) {
             System.out.println("\"Bohužiaľ, nevidím u teba žiadne gobliní uši ani pavúčie tesáky,\" vraví obchodník.");
             System.out.println("\"Príď, keď budeš mať čím platiť!\"");
-            // Tu by bola implementácia výmeny predmetov
         }
     }
 
-    private void zobrazUlohy(Hrac hrac) {
-        System.out.println("\nObchodník ti ponúka úlohy:");
-        System.out.println("1. \"Prines mi 5 gobliních uší a odmením ťa špeciálnou zbraňou.\"");
-        System.out.println("2. \"Potrebujem 3 pavúčie tesáky na prípravu lieku. Prines mi ich a dostaneš silný lektvar.\"");
-        System.out.println("3. \"Ak mi prinesieš klin z koruny Goblinieho kráľa, dám ti to najlepšie brnenie, aké mám.\"");
+    public void ponukniQuest(Hrac hrac) {
+        Quest quest = questDatabaza.getNahodnyQuestPreLevel(hrac.getLevel());
+        if (quest == null) {
+            System.out.println("Nemám pre teba žiadne vhodné úlohy.");
+            return;
+        }
 
-        System.out.println("\nKtorú úlohu chceš prijať? (1-3, alebo 0 pre žiadnu)");
+        System.out.println("Obchodník ti ponúka úlohu:");
+        System.out.println(quest.getNazov() + ": " + quest.getPopis());
+        System.out.println("Odmena: " + quest.getReward());
+
+        System.out.print("Chceš prijať túto úlohu? (a/n): ");
         Scanner scanner = new Scanner(System.in);
-
-        try {
-            int volba = Integer.parseInt(scanner.nextLine());
-
-            if (volba >= 1 && volba <= 3) {
-                System.out.println("\"Výborne! Teším sa, keď mi prinesieš potrebné veci,\" hovorí obchodník.");
-                // Tu by bola implementácia systému úloh
-            } else {
-                System.out.println("\"Možno nabudúce,\" povzdychne si obchodník.");
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("\"Nevadí, keď sa rozmyslíš, daj mi vedieť,\" vraví obchodník.");
+        String odpoved = scanner.nextLine().trim().toLowerCase();
+        if (odpoved.equals("a")) {
+            hrac.prijmiQuest(quest);
+        } else {
+            System.out.println("Možno nabudúce!");
         }
     }
 
@@ -122,8 +121,6 @@ public class Obchodnik extends Charakter {
         System.out.println("\nObchodník sa pozerá do tvojho inventára:");
         System.out.println("\"Hmm, momentálne nevidím nič, čo by som mohol premeniť na niečo užitočné.\"");
         System.out.println("\"Prines mi špecifické prísady z dungeonu a potom sa dohodneme.\"");
-
-        // Tu by bola implementácia systému premieňania predmetov
     }
 
     @Override
@@ -133,12 +130,9 @@ public class Obchodnik extends Charakter {
 
     @Override
     public void utok(Utocnik ciel) {
-        // Obchodník normálne neútočí, ale bráni sa ak je napadnutý
         if (ciel instanceof Hrac) {
-            Hrac hrac = (Hrac) ciel;
             System.out.println("Obchodník " + getMeno() + " vytiahol skrytú dýku na obranu!");
             System.out.println("\"Takto sa odplácaš za moju pohostinnosť?!\" kričí nahnevane.");
-            // Tu by bola implementácia obranného boja
         }
     }
 

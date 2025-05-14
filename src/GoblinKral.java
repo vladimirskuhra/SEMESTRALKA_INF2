@@ -2,9 +2,9 @@ import javax.swing.text.Position;
 import java.util.Random;
 import java.util.Scanner;
 
-public class GoblinKral extends Charakter {
+public class GoblinKral extends NPC {
     public GoblinKral(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana, TypCharakteru.GOBLIN_KRAL);
+        super(id, meno, popis, pozicia, zdravie, sila, obrana);
     }
 
     @Override
