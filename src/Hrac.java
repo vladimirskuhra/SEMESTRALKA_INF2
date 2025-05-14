@@ -1,14 +1,18 @@
 import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Hrac extends Charakter {
     private int level;
     private List<Quest> aktivneQuesty = new ArrayList<>();
+    private BattleSystem battleSystem;
 
-    public Hrac(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+    public Hrac(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
         super(id, meno, popis, pozicia, zdravie, sila, obrana);
+        this.battleSystem = battleSystem;
         this.level = 1;
+
     }
 
     public void zobrazQuesty() {
@@ -48,7 +52,7 @@ public class Hrac extends Charakter {
         if (ciel instanceof Charakter) {
             Charakter cielovaPostava = (Charakter) ciel;
             System.out.println("Útočíš na " + cielovaPostava.getMeno() + "!");
-            Main.bojovySystem(this, cielovaPostava);
+            battleSystem.boj(this, cielovaPostava);
         }
     }
 

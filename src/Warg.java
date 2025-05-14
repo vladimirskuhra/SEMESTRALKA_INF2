@@ -3,8 +3,12 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Warg extends NPC {
-    public Warg(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+
+    private BattleSystem battleSystem;
+
+    public Warg(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
         super(id, meno, popis, pozicia, zdravie, sila, obrana);
+        this.battleSystem = battleSystem;
     }
 
     @Override
@@ -87,9 +91,7 @@ public class Warg extends NPC {
         if (ciel instanceof Hrac) {
             Hrac hrac = (Hrac) ciel;
             System.out.println(getMeno() + " skáče na teba s otvorenou papuľou plnou ostrých zubov!");
-
-            // Implementácia boja je v Main.bojovySystem
-            Main.bojovySystem(hrac, this);
+            battleSystem.boj(hrac, this);
         }
     }
 

@@ -3,8 +3,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Goblin extends NPC {
-    public Goblin(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+    private BattleSystem battleSystem;
+
+    public Goblin(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
         super(id, meno, popis, pozicia, zdravie, sila, obrana);
+        this.battleSystem = battleSystem;
     }
 
     @Override
@@ -59,14 +62,10 @@ public class Goblin extends NPC {
 
     @Override
     public void utok(Utocnik ciel) {
-        // Goblin útočí len na hráča
         if (ciel instanceof Hrac) {
             Hrac hrac = (Hrac) ciel;
             System.out.println(getMeno() + " útočí na teba!");
-            // Spustí sa bojový systém
-            Main.bojovySystem(hrac, this);
-        } else {
-            // Ak ciel nie je hráč, goblin nič nerobí (alebo môžeme pridať inú logiku)
+            battleSystem.boj(hrac, this);
         }
     }
 

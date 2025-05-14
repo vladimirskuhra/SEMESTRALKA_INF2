@@ -3,8 +3,11 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Pavuk extends NPC {
-    public Pavuk(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+    private BattleSystem battleSystem;
+
+    public Pavuk(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
         super(id, meno, popis, pozicia, zdravie, sila, obrana);
+        this.battleSystem = battleSystem;
     }
 
     @Override
@@ -87,9 +90,7 @@ public class Pavuk extends NPC {
         if (ciel instanceof Hrac) {
             Hrac hrac = (Hrac) ciel;
             System.out.println(getMeno() + " sa na teba vrhá s jedovatými tesákmi!");
-
-            // Implementácia boja je v Main.bojovySystem
-            Main.bojovySystem(hrac, this);
+            battleSystem.boj(hrac, this);
         }
     }
 
