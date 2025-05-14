@@ -1,63 +1,41 @@
-import javax.swing.text.Position;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 public class Hrac extends Charakter {
-    private int level;
-    private List<Quest> aktivneQuesty = new ArrayList<>();
-    private BattleSystem battleSystem;
-
-    public Hrac(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana);
-        this.battleSystem = battleSystem;
-        this.level = 1;
-
+    public Hrac(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana) {
+        super(id, meno, popis, miestnost, zdravie, sila, obrana);
     }
-
-    public void zobrazQuesty() {
-        if (aktivneQuesty.isEmpty()) {
-            System.out.println("Žiadne aktívne questy.");
-            return;
-        }
-        for (Quest q : aktivneQuesty) {
-            System.out.println(q);
-        }
-    }
-
-    public void prijmiQuest(Quest q) {
-        if (aktivneQuesty.contains(q)) {
-            System.out.println("Tento quest už máš!");
-        } else {
-            aktivneQuesty.add(q);
-            System.out.println("Prijal si quest: " + q.getNazov());
-        }
-    }
-
-    public int getLevel() { return level; }
-    public void setLevel(int level) { this.level = level; }
-
-    public List<Quest> getAktivneQuesty() { return aktivneQuesty; }
-
-    @Override
-    public void interakcia(Hrac hrac) {
-        System.out.println("Nemôžeš interagovať sám so sebou.");
-    }
-
-    @Override
-    public void pouzitie(Hrac hrac) { }
 
     @Override
     public void utok(Utocnik ciel) {
-        if (ciel instanceof Charakter) {
-            Charakter cielovaPostava = (Charakter) ciel;
-            System.out.println("Útočíš na " + cielovaPostava.getMeno() + "!");
-            battleSystem.boj(this, cielovaPostava);
+        if (inventar.getAktivnaZbran() == null) {
+            System.out.println("Nemáš žiadnu zbraň, útočíš holými rukami!");
+            ciel.prijmiZasah(sila);
+        } else {
+            int damage = inventar.getAktivnaZbran().getSila() + sila;
+            ciel.prijmiZasah(damage);
+            System.out.println(getMeno() + " útočí so zbraňou " + inventar.getAktivnaZbran().getMeno()
+                    + " a spôsobí " + damage + " škody!");
         }
     }
 
     @Override
     public void obrana() {
-        System.out.println("Pripravuješ sa na obranu. Tvoja obrana sa dočasne zvýšila.");
+        // Prípadná špeciálna obrana hráča
+    }
+
+    @Override
+    public void prijmiZasah(int silaUtoku) {
+        int obranaHodnota = obrana;
+        if (inventar.getAktivneBrnenie() != null) {
+            obranaHodnota += inventar.getAktivneBrnenie().getObrana();
+        }
+        int zranenie = silaUtoku - obranaHodnota;
+        if (zranenie > 0) {
+            zdravie -= zranenie;
+            System.out.println(getMeno() + " dostal zásah za " + zranenie + " (obrana " + obranaHodnota + ").");
+            if (zdravie <= 0) {
+                System.out.println(getMeno() + " zomiera! Game Over.");
+            }
+        } else {
+            System.out.println(getMeno() + " odrazil útok, žiadne zranenie.");
+        }
     }
 }

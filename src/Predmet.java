@@ -11,22 +11,10 @@ public abstract class Predmet {
         this.hodnota = hodnota;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getMeno() { return meno; }
+    public String getPopis() { return popis; }
+    public int getHodnota() { return hodnota; }
 
-    public String getMeno() {
-        return meno;
-    }
-
-    public String getPopis() {
-        return popis;
-    }
-
-    public int getHodnota() {
-        return hodnota;
-    }
-
-    // Abstraktná metóda pre použitie predmetu
     public abstract void pouzitie(Hrac hrac);
 }

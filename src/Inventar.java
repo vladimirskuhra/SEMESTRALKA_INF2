@@ -12,14 +12,10 @@ public class Inventar {
         this.aktivneBrnenie = null;
     }
 
-    public List<Predmet> getPredmety() {
-        return predmety;
-    }
+    public List<Predmet> getPredmety() { return predmety; }
 
     public void pridajPredmet(Predmet predmet) {
         predmety.add(predmet);
-
-        // Automaticky nastav prvú zbraň/brnenie ako aktívne
         if (predmet instanceof Zbran && aktivnaZbran == null) {
             aktivnaZbran = (Zbran) predmet;
             System.out.println("Aktivoval si zbraň: " + predmet.getMeno());
@@ -30,18 +26,12 @@ public class Inventar {
     }
 
     public void odstranPredmet(Predmet predmet) {
-        if (predmet == aktivnaZbran) {
-            aktivnaZbran = null;
-        } else if (predmet == aktivneBrnenie) {
-            aktivneBrnenie = null;
-        }
+        if (predmet == aktivnaZbran) aktivnaZbran = null;
+        if (predmet == aktivneBrnenie) aktivneBrnenie = null;
         predmety.remove(predmet);
     }
 
-    public Zbran getAktivnaZbran() {
-        return aktivnaZbran;
-    }
-
+    public Zbran getAktivnaZbran() { return aktivnaZbran; }
     public void nastavAktivnuZbran(Zbran zbran) {
         if (predmety.contains(zbran)) {
             this.aktivnaZbran = zbran;
@@ -51,10 +41,7 @@ public class Inventar {
         }
     }
 
-    public Brnenie getAktivneBrnenie() {
-        return aktivneBrnenie;
-    }
-
+    public Brnenie getAktivneBrnenie() { return aktivneBrnenie; }
     public void nastavAktivneBrnenie(Brnenie brnenie) {
         if (predmety.contains(brnenie)) {
             this.aktivneBrnenie = brnenie;
@@ -62,5 +49,16 @@ public class Inventar {
         } else {
             System.out.println("Toto brnenie nemáš v inventári!");
         }
+    }
+
+    // Vrátí a odstráni aktívnu zbraň (napr. pri odzbrojení)
+    public Zbran odoberAktivnuZbran() {
+        if (aktivnaZbran != null) {
+            Zbran z = aktivnaZbran;
+            predmety.remove(z);
+            aktivnaZbran = null;
+            return z;
+        }
+        return null;
     }
 }

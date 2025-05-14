@@ -1,44 +1,35 @@
-import javax.swing.text.Position;
+// Abstraktná trieda pre všetky NPC postavy v hre.
+// Dedia z nej konkrétne typy: Nepriatel, Obchodnik, QuestGiver, atď.
 
 public abstract class NPC extends Charakter {
-    public NPC(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana);
+    // Prípadne ďalšie špecifické vlastnosti pre všetky NPC
+    // (napr. zoznam dialógov, reputácia, stav questov...)
+
+    public NPC(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana) {
+        super(id, meno, popis, miestnost, zdravie, sila, obrana);
     }
 
-    /**
-     * Dropne predmet po porazení/získaní.
-     * Každý potomok môže override-nuť podľa potreby.
-     */
-    public Predmet dropniPredmet() {
-        // Default: žiadny predmet, override-ne len nepriateľ alebo obchodník
-        return null;
+    // Každé NPC musí polymorfne riešiť interakciu s hráčom
+    @Override
+    public abstract void interakcia(Hrac hrac);
+
+    // Ak niektoré NPC vie niečo použiť (napr. elixír na seba), môžeš to tu implementovať,
+    // inak nechaj default (nič).
+    @Override
+    public void pouzitie(Hrac hrac) {
+        // Väčšina NPC štandardne nič nepoužíva
     }
 
-    /**
-     * Pohyb NPC. Obchodník override-ne na prázdnu metódu.
-     */
-    public void pohyb() {
-        // Základná logika pohybu NPC (nepriatelia sa môžu pohybovať)
+    // Ak je NPC útočná (napr. nepriateľ), bude overrideovať túto metódu;
+    // pokojné NPC môže mať prázdnu implementáciu.
+    @Override
+    public void utok(Utocnik ciel) {
+        // Default: nič
     }
 
-    /**
-     * Útok na hráča. Override-ne len nepriateľ.
-     */
-    public void utok(Hrac hrac) {
-        // Default: nič nerobí (obchodník neútočí)
-    }
-
-    /**
-     * Komunikácia s hráčom. Override-ne obchodník, quest giver, atď.
-     */
-    public void komunikuj(Hrac hrac) {
-        // Default: nič nerobí
-    }
-
-    /**
-     * Zastrašenie NPC minihrou. Override-ne len nepriatelia, ktorí môžu byť zastrašení.
-     */
-    public void zastras(Hrac hrac) {
-        // Default: nič nerobí
+    // Obrana – override len ak niektoré NPC má špeciálnu obranu.
+    @Override
+    public void obrana() {
+        // Default: nič
     }
 }

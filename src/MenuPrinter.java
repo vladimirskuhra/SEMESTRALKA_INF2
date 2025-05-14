@@ -31,7 +31,7 @@ public class MenuPrinter {
 
         if (!aktualna.getPostavy().isEmpty()) {
             System.out.println("\nV miestnosti sa nachádzajú:");
-            for (Charakter postava : aktualna.getPostavy()) {
+            for (NPC postava : aktualna.getPostavy()) {
                 if (postava.getZdravie() > 0) {
                     System.out.println("- " + postava.getMeno() + ": " + postava.getPopis());
                 }
@@ -40,6 +40,8 @@ public class MenuPrinter {
     }
 
     public void spracujAkciu(Hra game) {
+        Miestnost aktualna = dungeonManager.getDungeon().getAktualnaMiestnost();
+
         System.out.println("\nČo chceš robiť?");
         System.out.println("1. Preskúmať miestnosť");
         System.out.println("2. Zobraziť inventár");
@@ -47,9 +49,19 @@ public class MenuPrinter {
         System.out.println("4. Prejsť do inej miestnosti");
         System.out.println("5. Interagovať s postavou/predmetom");
         System.out.println("6. Ukončiť hru");
+        if (aktualna.isBezpecna()) {
+            System.out.println("7. Odpočinúť si");
+        }
 
-        System.out.print("\nTvoja voľba: ");
-        int volba = getNumericInput(1, 6);
+            // ... ostatné ako predtým
+        int maxVolba = aktualna.isBezpecna() ? 7 : 6;
+        int volba = getNumericInput(1, maxVolba);
+
+        if (volba == 7 && aktualna.isBezpecna()) {
+            Hrac hrac = playerManager.getHrac();
+            hrac.setZdravie(100); // alebo iný spôsob dopĺňania
+            System.out.println("Oddýchol si si. Zdravie doplnené!");
+        }
 
         switch(volba) {
             case 1:

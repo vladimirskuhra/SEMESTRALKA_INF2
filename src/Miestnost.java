@@ -1,55 +1,42 @@
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Miestnost implements Interakcia {
-    protected String id;
-    protected String meno;
-    protected String popis;
-    protected Position pozicia;
-    protected List<Predmet> predmety;
-    protected List<Charakter> postavy;
+public class Miestnost {
+    private final String id;
+    private final String meno;
+    private final String popis;
+    private final boolean jeBezpecna;
+    private final List<NPC> postavy = new ArrayList<>();
+    private final List<Predmet> predmety = new ArrayList<>();
 
-    public Miestnost(String id, String meno, String popis, Position pozicia) {
+    public Miestnost(String id, String meno, String popis, boolean jeBezpecna) {
         this.id = id;
         this.meno = meno;
         this.popis = popis;
-        this.pozicia = pozicia;
-        this.predmety = new ArrayList<>();
-        this.postavy = new ArrayList<>();
+        this.jeBezpecna = jeBezpecna;
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public String getMeno() { return meno; }
+    public String getPopis() { return popis; }
+    public boolean isBezpecna() { return jeBezpecna; }
 
-    public String getMeno() {
-        return meno;
-    }
+    public List<NPC> getPostavy() { return postavy; }
+    public List<Predmet> getPredmety() { return predmety; }
 
-    public String getPopis() {
-        return popis;
-    }
+    public void pridajPostavu(NPC npc) { postavy.add(npc); }
+    public void pridajPredmet(Predmet p) { predmety.add(p); }
+    public void odstranPredmet(Predmet predmet) { predmety.remove(predmet); }
 
-    public Position getPozicia() {
-        return pozicia;
-    }
-
-    public List<Predmet> getPredmety() {
-        return predmety;
-    }
-
-    public List<Charakter> getPostavy() {
-        return postavy;
-    }
-
-    public abstract void prehladat(Hrac hrac);
-
-    public void pridajPredmet(Predmet predmet) {
-        predmety.add(predmet);
-    }
-
-    public void pridajPostavu(Charakter postava) {
-        postavy.add(postava);
+    public void prehladat(Hrac hrac) {
+        if (predmety.isEmpty()) {
+            System.out.println("V miestnosti si nič nenašiel.");
+            return;
+        }
+        System.out.println("V miestnosti nachádzaš:");
+        for (Predmet p : predmety) {
+            System.out.println("- " + p.getMeno() + ": " + p.getPopis());
+        }
+        // Ďalšia logika pre výber a zdvíhanie predmetov...
     }
 }

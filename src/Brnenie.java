@@ -1,16 +1,16 @@
 public class Brnenie extends Predmet {
-    public Brnenie(String id, String meno, String popis, int bonusObrany) {
-        super(id, meno, popis, bonusObrany);
+    private int obrana;
+
+    public Brnenie(String id, String meno, String popis, int hodnota, int obrana) {
+        super(id, meno, popis, hodnota);
+        this.obrana = obrana;
     }
+
+    public int getObrana() { return obrana; }
 
     @Override
     public void pouzitie(Hrac hrac) {
-        System.out.println("Obliekol so si brnenie: " + getMeno());
-        hrac.getInventar().nastavAktivneBrnenie(this);
-    }
-
-    // Bonus k obrane
-    public int getBonusObrany() {
-        return getHodnota();
+        // Môžeš implementovať efekt brnenia pri použití
+        System.out.println("Obliekaš si brnenie: " + meno);
     }
 }

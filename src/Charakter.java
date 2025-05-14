@@ -1,76 +1,46 @@
-import javax.swing.text.Position;
-
-public abstract class Charakter implements Utocnik, Interakcia {
+public abstract class Charakter implements Utocnik {
     protected String id;
     protected String meno;
     protected String popis;
-    protected Position pozicia;
+    protected Miestnost miestnost;
     protected int zdravie;
     protected int sila;
     protected int obrana;
     protected Inventar inventar;
 
-    public Charakter(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana) {
+    public Charakter(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana) {
         this.id = id;
         this.meno = meno;
         this.popis = popis;
-        this.pozicia = pozicia;
+        this.miestnost = miestnost;
         this.zdravie = zdravie;
         this.sila = sila;
         this.obrana = obrana;
         this.inventar = new Inventar();
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getMeno() {
-        return meno;
-    }
-
-    public String getPopis() {
-        return popis;
-    }
-
-    public Position getPozicia() {
-        return pozicia;
-    }
-
-    public int getZdravie() {
-        return zdravie;
-    }
-
-    public void setZdravie(int zdravie) {
-        this.zdravie = zdravie;
-    }
-
-    public int getSila() {
-        return sila;
-    }
-
-    public int getObrana() {
-        return obrana;
-    }
-
-    public Inventar getInventar() {
-        return inventar;
-    }
-
-    public void pohyb(Position novaPozicia) {
-        this.pozicia = novaPozicia;
-    }
-
-    // Abstraktné metódy na polymorfizmus
-    @Override
-    public abstract void interakcia(Hrac hrac);
+    public String getId() { return id; }
+    public String getMeno() { return meno; }
+    public String getPopis() { return popis; }
+    public Miestnost getMiestnost() { return miestnost; }
+    public void setMiestnost(Miestnost miestnost) { this.miestnost = miestnost; }
+    public int getZdravie() { return zdravie; }
+    public void setZdravie(int zdravie) { this.zdravie = zdravie; }
+    public int getSila() { return sila; }
+    public int getObrana() { return obrana; }
+    public Inventar getInventar() { return inventar; }
 
     @Override
-    public abstract void pouzitie(Hrac hrac);
+    public void pohyb(Miestnost novaMiestnost) {
+        this.miestnost = novaMiestnost;
+    }
 
     @Override
     public abstract void utok(Utocnik ciel);
 
     @Override
     public abstract void obrana();
+
+    @Override
+    public abstract void prijmiZasah(int silaUtoku);
 }
