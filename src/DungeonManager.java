@@ -65,6 +65,36 @@ public class DungeonManager {
                 new Warg("warg1", "Divý warg", "Veľký vlku podobný tvor s ostrými zubmi", null, 70, 14, 6, battleSystem)
         );
 
+        // --- Prepojenie miestností cez východy (príklad mapy) ---
+        vstup.pridajVychod("východ", chodba);
+
+        chodba.pridajVychod("západ", vstup);
+        chodba.pridajVychod("sever", sklad);
+        chodba.pridajVychod("východ", gobliniTab);
+        chodba.pridajVychod("juh", odpocivadlo);
+
+        sklad.pridajVychod("juh", obchod);
+        sklad.pridajVychod("juhovýchod", gobliniTab);
+        sklad.pridajVychod("juh", chodba); // alternatívne, podľa mapy
+
+        gobliniTab.pridajVychod("západ", chodba);
+        gobliniTab.pridajVychod("východ", tron);
+
+        odpocivadlo.pridajVychod("sever", chodba);
+        odpocivadlo.pridajVychod("východ", pavuciBrloh);
+
+        obchod.pridajVychod("sever", sklad);
+
+        tron.pridajVychod("západ", gobliniTab);
+        tron.pridajVychod("juh", pavuciBrloh);
+
+        pavuciBrloh.pridajVychod("západ", odpocivadlo);
+        pavuciBrloh.pridajVychod("sever", tron);
+        pavuciBrloh.pridajVychod("východ", wargDoupie);
+
+        wargDoupie.pridajVychod("západ", pavuciBrloh);
+
+        // --- Pridanie všetkých miestností do zoznamu ---
         miestnosti.add(vstup);
         miestnosti.add(chodba);
         miestnosti.add(sklad);

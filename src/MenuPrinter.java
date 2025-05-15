@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MenuPrinter {
@@ -7,7 +8,7 @@ public class MenuPrinter {
     private final DungeonManager dungeonManager;
     private final InteractionManager interactionManager;
     private final BattleSystem battleSystem;
-    private final QuestManager questManager; // PRIDANÉ
+    private final QuestManager questManager;
 
     public MenuPrinter(Scanner scanner, PlayerManager pm, DungeonManager dm, InteractionManager im, BattleSystem bs, QuestManager qm) {
         this.scanner = scanner;
@@ -15,7 +16,7 @@ public class MenuPrinter {
         this.dungeonManager = dm;
         this.interactionManager = im;
         this.battleSystem = bs;
-        this.questManager = qm; // PRIDANÉ
+        this.questManager = qm;
     }
 
     public void zobrazInfoOMiestnosti() {
@@ -147,23 +148,35 @@ public class MenuPrinter {
         }
     }
 
+    // ÚPRAVA: Pohyb len podľa dostupných východov
     private void zmenMiestnost() {
-        List<Miestnost> miestnosti = dungeonManager.getDungeon().getMiestnosti();
         Miestnost aktualna = dungeonManager.getDungeon().getAktualnaMiestnost();
+        Map<String, Miestnost> vychody = aktualna.getVychody();
 
-        System.out.println("\nDo ktorej miestnosti chceš ísť?");
-        for (int i = 0; i < miestnosti.size(); i++) {
-            Miestnost m = miestnosti.get(i);
-            if (!m.equals(aktualna)) {
-                System.out.println((i+1) + ". " + m.getMeno());
-            }
+        if (vychody.isEmpty()) {
+            System.out.println("\nZ tejto miestnosti nevedú žiadne východy.");
+            return;
         }
 
-        System.out.print("\nTvoja voľba (0 pre návrat): ");
-        int volba = getNumericInput(0, miestnosti.size());
+        System.out.println("\nDostupné východy:");
+        int i = 1;
+        // Mapovanie čísla voľby na smer
+        java.util.Map<Integer, String> volby = new java.util.HashMap<>();
+        for (String smer : vychody.keySet()) {
+            System.out.println(i + ". " + smer + " (" + vychody.get(smer).getMeno() + ")");
+            volby.put(i, smer);
+            i++;
+        }
+        System.out.println("0. Návrat");
+
+        int volba = getNumericInput(0, vychody.size());
 
         if (volba != 0) {
-            dungeonManager.getDungeon().pohybDoMiestnosti(miestnosti.get(volba - 1));
+            String smer = volby.get(volba);
+            boolean uspesne = dungeonManager.getDungeon().pohybPodlaSmeru(smer);
+            if (uspesne) {
+                System.out.println("Presúvaš sa " + smer + " do miestnosti: " + dungeonManager.getDungeon().getAktualnaMiestnost().getMeno());
+            }
         }
     }
 

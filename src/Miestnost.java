@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Miestnost {
@@ -10,6 +12,9 @@ public class Miestnost {
     private final List<NPC> postavy = new ArrayList<>();
     private final List<Predmet> predmety = new ArrayList<>();
     private boolean prehladana = false;
+
+    // Prepojenie miestností - východy: smer (napr. "sever") -> cieľová miestnosť
+    private final Map<String, Miestnost> vychody = new HashMap<>();
 
     public Miestnost(String id, String meno, String popis, TypMiestnosti typ) {
         this.id = id;
@@ -25,7 +30,16 @@ public class Miestnost {
     public List<NPC> getPostavy() { return postavy; }
     public List<Predmet> getPredmety() { return predmety; }
 
-    // "Bezpečná" je len ak nie je žiadny živý nepriateľ
+    // Prepojenie miestností
+    public void pridajVychod(String smer, Miestnost miestnost) {
+        vychody.put(smer, miestnost);
+    }
+
+    public Map<String, Miestnost> getVychody() {
+        return vychody;
+    }
+
+    // "Bezpečná" je len ak nie je žiadny živý nepriateľ alebo je to ODPOCIVADLO
     public boolean isBezpecna() {
         if (typ == TypMiestnosti.ODPOCIVADLO) {
             return true;
@@ -46,7 +60,6 @@ public class Miestnost {
         switch (typ) {
             case OBCHODNIK:
                 System.out.println("Vidíš obchodníka s rôznym tovarom na predaj.");
-                // Tu môžeš doplniť logiku pre obchod/obchodníka
                 break;
             case ODPOCIVADLO:
                 System.out.println("Prehľadávaš odpočívadlo. Je tu pokojné miesto na oddych.");
@@ -147,7 +160,6 @@ public class Miestnost {
                 String odpoved = sc.nextLine().toLowerCase();
                 if (odpoved.equals("a")) {
                     System.out.println("Rozhodol si sa opustiť dungeon. Dobrodružstvo končí.");
-                    // Exit game logic
                 } else {
                     System.out.println("Pokračuješ v dobrodružstve.");
                 }
