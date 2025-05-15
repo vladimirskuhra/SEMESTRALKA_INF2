@@ -72,11 +72,6 @@ public class Warg extends Nepriatel {
         }
     }
 
-    @Override
-    public void pouzitie(Hrac hrac) {
-        System.out.println("Nemôžeš použiť warga ako predmet.");
-    }
-
     // utok(Utocnik ciel) a prijmiZasah(int) sú už implementované v Nepriatel
     // Ak chceš špeciálne správanie, môžeš override-núť
 

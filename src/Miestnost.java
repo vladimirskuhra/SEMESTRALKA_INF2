@@ -52,7 +52,10 @@ public class Miestnost {
         return true;
     }
 
-    public void pridajPostavu(NPC postava) { postavy.add(postava); }
+    public void pridajPostavu(NPC postava) {
+        postavy.add(postava);
+        postava.setMiestnost(this);
+    }
     public void pridajPredmet(Predmet p) { predmety.add(p); }
     public void odstranPredmet(Predmet predmet) { predmety.remove(predmet); }
 

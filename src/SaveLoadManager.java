@@ -105,7 +105,7 @@ public class SaveLoadManager {
                         String meno = zbranLine.substring(14).trim();
                         if (!meno.isEmpty()) {
                             Predmet zbran = NajdiPredmetPodlaMena(meno);
-                            if (zbran != null) hrac.getInventar().nastavAktivnuZbran(zbran);
+                            if (zbran != null) hrac.getInventar().nastavAktivnuZbran((Zbran) zbran);
                         }
                     }
                     // Aktívne brnenie
@@ -114,7 +114,7 @@ public class SaveLoadManager {
                         String meno = brnenieLine.substring(17).trim();
                         if (!meno.isEmpty()) {
                             Predmet brnenie = NajdiPredmetPodlaMena(meno);
-                            if (brnenie != null) hrac.getInventar().nastavAktivneBrnenie(brnenie);
+                            if (brnenie != null) hrac.getInventar().nastavAktivneBrnenie((Brnenie) brnenie);
                         }
                     }
                 }

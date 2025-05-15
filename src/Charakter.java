@@ -7,6 +7,8 @@ public abstract class Charakter implements Utocnik {
     protected int sila;
     protected int obrana;
     protected Inventar inventar;
+    protected int docasnaObrana = 0; // zvýšená obrana na 1 kolo
+
 
     public Charakter(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana) {
         this.id = id;
@@ -19,16 +21,36 @@ public abstract class Charakter implements Utocnik {
         this.inventar = new Inventar();
     }
 
-    public String getId() { return id; }
-    public String getMeno() { return meno; }
-    public String getPopis() { return popis; }
-    public Miestnost getMiestnost() { return miestnost; }
-    public void setMiestnost(Miestnost miestnost) { this.miestnost = miestnost; }
-    public int getZdravie() { return zdravie; }
-    public void setZdravie(int zdravie) { this.zdravie = zdravie; }
-    public int getSila() { return sila; }
-    public int getObrana() { return obrana; }
-    public Inventar getInventar() { return inventar; }
+    public String getId() {
+        return id;
+    }
+    public String getMeno() {
+        return meno;
+    }
+    public String getPopis() {
+        return popis;
+    }
+    public Miestnost getMiestnost() {
+        return miestnost;
+    }
+    public void setMiestnost(Miestnost miestnost) {
+        this.miestnost = miestnost;
+    }
+    public int getZdravie() {
+        return zdravie;
+    }
+    public void setZdravie(int zdravie) {
+        this.zdravie = zdravie;
+    }
+    public int getSila() {
+        return sila;
+    }
+    public int getObrana() {
+        return obrana;
+    }
+    public Inventar getInventar() {
+        return inventar;
+    }
 
     @Override
     public void pohyb(Miestnost novaMiestnost) {

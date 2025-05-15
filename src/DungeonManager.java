@@ -12,6 +12,9 @@ public class DungeonManager {
         this.questDatabaza = questDatabaza;
         this.questManager = questManager;
     }
+    public QuestDatabaza getQuestDatabaza() {
+        return this.questDatabaza;
+    }
 
     public void vytvorDungeon(Hrac hrac) {
         List<Miestnost> miestnosti = new ArrayList<>();
@@ -36,8 +39,8 @@ public class DungeonManager {
 
         Miestnost gobliniTab = new Miestnost("m4", "Gobliní tábor",
                 "Malá jaskyňa premenená na tábor goblinov. Vidieť niekoľko provizórnych lôžok a ohnisko.", TypMiestnosti.NEPRIATELIA);
-        gobliniTab.pridajPostavu(new Goblin("goblin1", "Gobliní strážca", "Malý goblin so zúbkami", null, 30, 5, 2, battleSystem));
-        gobliniTab.pridajPostavu(new Goblin("goblin2", "Gobliní bojovník", "Väčší goblin s rapkáňom", null, 40, 7, 3, battleSystem));
+        gobliniTab.pridajPostavu(new Goblin("goblin1", "Gobliní strážca", "Malý goblin so zúbkami", null, 30, 5, 2, 0.15));
+        gobliniTab.pridajPostavu(new Goblin("goblin2", "Gobliní bojovník", "Väčší goblin s rapkáňom", null, 40, 7, 3, 0.15));
 
         Miestnost odpocivadlo = new Miestnost("m5", "Tichá jaskyňa",
                 "Pokojná jaskyňa s malým potôčikom. Vyzerá to ako bezpečné miesto na odpočinok.", TypMiestnosti.ODPOCIVADLO);
@@ -51,7 +54,7 @@ public class DungeonManager {
         Miestnost tron = new Miestnost("m7", "Trónna sieň",
                 "Veľká sieň s trónom z kostí. Na tróne sedí Gobliní kráľ, obklopený lukostrelcami.", TypMiestnosti.NEPRIATELIA);
         tron.pridajPostavu(
-                new GoblinKral("boss1", "Gobliní kráľ", "Mohutný goblin s korunou a žezlom", null, 100, 15, 8, battleSystem)
+                new GoblinKral("boss1", "Gobliní kráľ", "Mohutný goblin s korunou a žezlom", null, 100, 15, 8,0.07, battleSystem)
         );
         tron.pridajPostavu(
                 new GoblinLukostrelec("archer1", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, battleSystem)
@@ -69,7 +72,7 @@ public class DungeonManager {
         Miestnost wargDoupie = new Miestnost("m9", "Wargie dúpä",
                 "Temná jaskyňa plná kostí a zvyškov koristi. Cítiš zápach šeliem.", TypMiestnosti.NEPRIATELIA);
         wargDoupie.pridajPostavu(
-                new Warg("warg1", "Divý warg", "Veľký vlku podobný tvor s ostrými zubmi", null, 70, 14, 6, battleSystem)
+                new Warg("warg1", "Divý warg", "Veľký vlku podobný tvor s ostrými zubmi", null, 70, 14, 6, 0.15, battleSystem)
         );
 
         // --- Prepojenie miestností cez východy (príklad mapy) ---

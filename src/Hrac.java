@@ -15,6 +15,22 @@ public class Hrac extends Charakter {
         this.aktivneQuesty = new ArrayList<>();
     }
 
+    public void setMeno(String meno) {
+        this.meno = meno;
+    }
+    public void setZdravie(int zdravie) {
+        this.zdravie = zdravie;
+    }
+    public void setSila(int sila) {
+        this.sila = sila;
+    }
+    public void setObrana(int obrana) {
+        this.obrana = obrana;
+    }
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -57,24 +73,27 @@ public class Hrac extends Charakter {
 
     @Override
     public void obrana() {
-        // Prípadná špeciálna obrana hráča
+        System.out.println(getMeno() + " zdvíha svoj štít na obranu!");
+        this.docasnaObrana = 5; // +5 obrana na jedno kolo wohoo
     }
 
     @Override
     public void prijmiZasah(int silaUtoku) {
         int obranaHodnota = obrana;
+        int efektivnaObrana = obranaHodnota + this.docasnaObrana;
         if (inventar.getAktivneBrnenie() != null) {
             obranaHodnota += inventar.getAktivneBrnenie().getObrana();
         }
-        int zranenie = silaUtoku - obranaHodnota;
+        int zranenie = silaUtoku - efektivnaObrana;
         if (zranenie > 0) {
             zdravie -= zranenie;
-            System.out.println(getMeno() + " dostal zásah za " + zranenie + " (obrana " + obranaHodnota + ").");
+            System.out.println(getMeno() + " dostal zásah za " + zranenie + " (obrana " + efektivnaObrana + ").");
             if (zdravie <= 0) {
                 System.out.println(getMeno() + " zomiera! Game Over.");
             }
         } else {
             System.out.println(getMeno() + " odrazil útok, žiadne zranenie.");
         }
+        this.docasnaObrana = 0;
     }
 }
