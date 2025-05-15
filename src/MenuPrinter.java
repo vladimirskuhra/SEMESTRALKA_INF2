@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -47,6 +48,16 @@ public class MenuPrinter {
     public void spracujAkciu(Hra game) {
         Miestnost aktualna = dungeonManager.getDungeon().getAktualnaMiestnost();
 
+        // Skontroluj, či sú v miestnosti živí nepriatelia
+        List<NPC> postavy = aktualna.getPostavy();
+        boolean suNepriatelia = false;
+        for (NPC npc : postavy) {
+            if (npc instanceof Nepriatel && npc.getZdravie() > 0) {
+                suNepriatelia = true;
+                break;
+            }
+        }
+
         System.out.println("\nČo chceš robiť?");
         System.out.println("1. Preskúmať miestnosť");
         System.out.println("2. Zobraziť inventár");
@@ -55,22 +66,68 @@ public class MenuPrinter {
         System.out.println("5. Interagovať s postavou/predmetom");
         System.out.println("6. Zobraziť aktívne questy");
         System.out.println("7. Ukončiť hru");
+        int next = 8;
         if (aktualna.isBezpecna()) {
-            System.out.println("8. Odpočinúť si");
+            System.out.println(next + ". Odpočinúť si");
+            next++;
         }
-        System.out.println("9. Uložiť hru");
-        System.out.println("10. Načítať hru");
-
-        int maxVolba = aktualna.isBezpecna() ? 10 : 9;
+        System.out.println(next + ". Uložiť hru");
+        next++;
+        System.out.println(next + ". Načítať hru");
+        next++;
+        int utokVolba = -1;
+        if (suNepriatelia) {
+            utokVolba = next;
+            System.out.println(next + ". Zaútočiť na nepriateľa v miestnosti");
+            next++;
+        }
+        int maxVolba = next - 1;
         int volba = getNumericInput(1, maxVolba);
 
-        // Riešenie volieb
-        if (volba == 8 && aktualna.isBezpecna()) {
+        // Ak hráč zvolí odpočinok
+        if (aktualna.isBezpecna() && volba == 8) {
             Hrac hrac = playerManager.getHrac();
             hrac.setZdravie(100);
             System.out.println("Oddýchol si si. Zdravie doplnené!");
             return;
         }
+        // Ak hráč zvolí útok na nepriateľa
+        if (utokVolba != -1 && volba == utokVolba) {
+            Hrac hrac = playerManager.getHrac();
+            List<Nepriatel> nepriatelia = new ArrayList<>();
+            for (NPC npc : postavy) {
+                if (npc instanceof Nepriatel && npc.getZdravie() > 0) {
+                    nepriatelia.add((Nepriatel) npc);
+                }
+            }
+            if (nepriatelia.isEmpty()) {
+                System.out.println("V miestnosti nie je žiadny nepriateľ na boj.");
+                return;
+            }
+
+            // Ak chceš výber jedného, odkomentuj nižšie a zakomentuj predávanie celej skupiny
+            /*
+            System.out.println("Vyber nepriateľa na útok:");
+            for (int i = 0; i < nepriatelia.size(); i++) {
+                System.out.println((i + 1) + ". " + nepriatelia.get(i).getMeno() +
+                                " (zdravie: " + nepriatelia.get(i).getZdravie() + ")");
+            }
+            System.out.println("0. Späť");
+            int vyber = getNumericInput(0, nepriatelia.size());
+            if (vyber == 0) return;
+            List<Nepriatel> vybrany = List.of(nepriatelia.get(vyber - 1));
+            battleSystem.boj(hrac, vybrany);
+            */
+
+            // Ak chceš boj so všetkými naraz (klasický dungeon crawl)
+            System.out.println("Začína boj so všetkými nepriateľmi v miestnosti!");
+            battleSystem.boj(hrac, nepriatelia);
+            return;
+        }
+        // Ostatné voľby
+        int odchodVolba = aktualna.isBezpecna() ? 9 : 8;
+        int ulozVolba = aktualna.isBezpecna() ? 9 : 8;
+        int nacitajVolba = aktualna.isBezpecna() ? 10 : 9;
         switch(volba) {
             case 1:
                 preskumajMiestnost();
@@ -98,6 +155,11 @@ public class MenuPrinter {
                 }
                 break;
             case 9:
+                if (aktualna.isBezpecna()) { // odpočinok
+                    break;
+                }
+                // PREPADÁ NA ĎALŠÍ PRÍPAD (uložiť hru)
+            case 8:
                 try {
                     saveLoadManager.ulozHru("save.txt");
                     System.out.println("Hra bola úspešne uložená.");
@@ -106,11 +168,13 @@ public class MenuPrinter {
                 }
                 break;
             case 10:
-                try {
-                    saveLoadManager.nacitajHru("save.txt");
-                    System.out.println("Hra bola úspešne načítaná.");
-                } catch (Exception e) {
-                    System.out.println("Chyba pri načítaní hry: " + e.getMessage());
+                if (aktualna.isBezpecna()) { // načítať hru
+                    try {
+                        saveLoadManager.nacitajHru("save.txt");
+                        System.out.println("Hra bola úspešne načítaná.");
+                    } catch (Exception e) {
+                        System.out.println("Chyba pri načítaní hry: " + e.getMessage());
+                    }
                 }
                 break;
         }
@@ -177,7 +241,6 @@ public class MenuPrinter {
 
         System.out.println("\nDostupné východy:");
         int i = 1;
-        // Mapovanie čísla voľby na smer
         java.util.Map<Integer, String> volby = new java.util.HashMap<>();
         for (String smer : vychody.keySet()) {
             System.out.println(i + ". " + smer + " (" + vychody.get(smer).getMeno() + ")");

@@ -83,7 +83,7 @@ public class DungeonManager {
         chodba.pridajVychod("východ", gobliniTab);
         chodba.pridajVychod("juh", odpocivadlo);
 
-        sklad.pridajVychod("juh", obchod);
+        sklad.pridajVychod("sever", obchod);
         sklad.pridajVychod("juhovýchod", gobliniTab);
         sklad.pridajVychod("juh", chodba);
 
