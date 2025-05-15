@@ -96,8 +96,8 @@ public class BattleSystem {
         }
     }
 
-    // Ukážková AI rozhodovanie pre nepriateľa
-    private void nepriatelAIAkcia(Nepriatel nepriatel, Hrac hrac) {
+
+    private void nepriatelAIAkcia(Nepriatel nepriatel, Hrac hrac) { // nepriatel sa rozhoduje pomocou primitivneho AI
         int akcia = random.nextInt(100);
         if (nepriatel.getZdravie() < 8 && akcia < 20) { // 20% šanca na útek pri nízkom zdraví
             System.out.println(nepriatel.getMeno() + " sa pokúša utiecť!");
@@ -116,12 +116,10 @@ public class BattleSystem {
         }
     }
 
-    // Použitie elixíru – hráč si môže vybrať z predmetov, ktoré sú elixíry
+
     private boolean pouzitLektvar(Hrac hrac) {
         List<Predmet> predmety = hrac.getInventar().getPredmety();
-        List<Predmet> lektvary = predmety.stream()
-                .filter(p -> p instanceof Lektvar)
-                .toList();
+        List<Predmet> lektvary = predmety.stream().filter(p -> p instanceof Lektvar).toList();
 
         if (lektvary.isEmpty()) {
             System.out.println("Nemáš žiadne lektvary!");
@@ -137,8 +135,8 @@ public class BattleSystem {
         int volba = getNumericInput(0, lektvary.size());
         if (volba == 0) return false;
         Lektvar lektvar = (Lektvar) lektvary.get(volba - 1);
-        lektvar.pouzitie(hrac);
-        // lektvar sa odstráni v pouzitie(), už netreba ručne odstraňovať
+        lektvar.pouzitie(hrac); // lektvar sa odstrani automaticky z invetnaru po pouziti, bomba fest
+
         return true;
     }
 

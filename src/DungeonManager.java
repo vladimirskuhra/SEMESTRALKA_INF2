@@ -57,16 +57,16 @@ public class DungeonManager {
                 new GoblinKral("boss1", "Gobliní kráľ", "Mohutný goblin s korunou a žezlom", null, 100, 15, 8,0.07, battleSystem)
         );
         tron.pridajPostavu(
-                new GoblinLukostrelec("archer1", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, battleSystem)
+                new GoblinLukostrelec("archer1", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, 0.2)
         );
         tron.pridajPostavu(
-                new GoblinLukostrelec("archer2", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, battleSystem)
+                new GoblinLukostrelec("archer2", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, 0.2)
         );
 
         Miestnost pavuciBrloh = new Miestnost("m8", "Pavúčí brloh",
                 "Jaskyňa pokrytá pavučinami. Zo stropu visia husté siete.", TypMiestnosti.NEPRIATELIA);
         pavuciBrloh.pridajPostavu(
-                new Pavuk("pavuk1", "Obrovský pavúk", "Chĺpaty pavúk veľkosti psa", null, 60, 12, 4, battleSystem)
+                new Pavuk("pavuk1", "Obrovský pavúk", "Chĺpaty pavúk veľkosti psa", null, 60, 12, 4, 0.50)
         );
 
         Miestnost wargDoupie = new Miestnost("m9", "Wargie dúpä",
