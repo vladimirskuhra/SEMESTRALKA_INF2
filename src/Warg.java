@@ -1,13 +1,12 @@
-import javax.swing.text.Position;
 import java.util.Random;
 import java.util.Scanner;
 
-public class Warg extends NPC {
+public class Warg extends Nepriatel {
+    private final BattleSystem battleSystem;
 
-    private BattleSystem battleSystem;
-
-    public Warg(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, BattleSystem battleSystem) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana);
+    public Warg(String id, String meno, String popis, Miestnost miestnost,
+                int zdravie, int sila, int obrana, double sancaNaZastrasenie, BattleSystem battleSystem) {
+        super(id, meno, popis, miestnost, zdravie, sila, obrana, sancaNaZastrasenie);
         this.battleSystem = battleSystem;
     }
 
@@ -24,8 +23,7 @@ public class Warg extends NPC {
         System.out.print("Tvoja voľba: ");
 
         try {
-            int volba = Integer.parseInt(scanner.nextLine());
-
+            int volba = Integer.parseInt(scanner.nextLine().trim());
             switch (volba) {
                 case 1:
                     this.utok(hrac);
@@ -47,17 +45,12 @@ public class Warg extends NPC {
     }
 
     private void zastrasitWarga(Hrac hrac) {
-        Random random = new Random();
-        int zastraseniaHod = random.nextInt(20) + 1;
-
-        System.out.println("Pokúšaš sa zastrašiť warga hlasným výkrikom a mávaním zbraňou... Hod kockou: " + zastraseniaHod);
-
-        if (zastraseniaHod > 14) { // Warg je ťažšie zastrašiteľný
+        if (this.pokusZastrasenie()) {
             System.out.println("Warg cúva a kňučí! Podarilo sa ti ho zastrašiť!");
             System.out.println("Warg sa stiahol a umožňuje ti bezpečný prechod.");
         } else {
             System.out.println("Warg považuje tvoj pokus o zastrašenie za výzvu a útočí s väčšou zúrivosťou!");
-            int damage = random.nextInt(8) + 4;
+            int damage = new Random().nextInt(8) + 4;
             hrac.setZdravie(hrac.getZdravie() - damage);
             System.out.println("Warg ťa pohrýzol! Stratil si " + damage + " životov.");
             this.utok(hrac);
@@ -65,16 +58,14 @@ public class Warg extends NPC {
     }
 
     private void utekZBoja(Hrac hrac) {
-        Random random = new Random();
-        int utekHod = random.nextInt(20) + 1;
-
+        int utekHod = new Random().nextInt(20) + 1;
         System.out.println("Pokúšaš sa utiecť pred wargom... Hod kockou: " + utekHod);
 
-        if (utekHod > 15) { // Warg je rýchly, ťažšie pred ním utiecť
+        if (utekHod > 15) {
             System.out.println("Neuveriteľne, podarilo sa ti utiecť pred wargom!");
         } else {
             System.out.println("Warg je príliš rýchly! Dobehol ťa a skočil ti na chrbát!");
-            int damage = random.nextInt(10) + 5;
+            int damage = new Random().nextInt(10) + 5;
             hrac.setZdravie(hrac.getZdravie() - damage);
             System.out.println("Stratil si " + damage + " životov.");
             this.utok(hrac);
@@ -86,18 +77,13 @@ public class Warg extends NPC {
         System.out.println("Nemôžeš použiť warga ako predmet.");
     }
 
-    @Override
-    public void utok(Utocnik ciel) {
-        if (ciel instanceof Hrac) {
-            Hrac hrac = (Hrac) ciel;
-            System.out.println(getMeno() + " skáče na teba s otvorenou papuľou plnou ostrých zubov!");
-            battleSystem.boj(hrac, this);
-        }
-    }
+    // utok(Utocnik ciel) a prijmiZasah(int) sú už implementované v Nepriatel
+    // Ak chceš špeciálne správanie, môžeš override-núť
 
+    // Ak máš v Nepriatel metódu obrana(), môžeš override-nuť podľa potreby:
     @Override
     public void obrana() {
         System.out.println(getMeno() + " cúva a pripravuje sa na výpad!");
-        // Tu by bola logika pre zvýšenie obrany na jedno kolo
+        // Tu môže byť špeciálna logika pre zvýšenie obrany na jedno kolo
     }
 }

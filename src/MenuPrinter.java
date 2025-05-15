@@ -9,14 +9,16 @@ public class MenuPrinter {
     private final InteractionManager interactionManager;
     private final BattleSystem battleSystem;
     private final QuestManager questManager;
+    private final SaveLoadManager saveLoadManager; // PRIDAŤ
 
-    public MenuPrinter(Scanner scanner, PlayerManager pm, DungeonManager dm, InteractionManager im, BattleSystem bs, QuestManager qm) {
+    public MenuPrinter(Scanner scanner, PlayerManager pm, DungeonManager dm, InteractionManager im, BattleSystem bs, QuestManager qm, SaveLoadManager slm) {
         this.scanner = scanner;
         this.playerManager = pm;
         this.dungeonManager = dm;
         this.interactionManager = im;
         this.battleSystem = bs;
         this.questManager = qm;
+        this.saveLoadManager = slm; // PRIDAŤ
     }
 
     public void zobrazInfoOMiestnosti() {
@@ -53,23 +55,22 @@ public class MenuPrinter {
         System.out.println("5. Interagovať s postavou/predmetom");
         System.out.println("6. Zobraziť aktívne questy");
         System.out.println("7. Ukončiť hru");
-
         if (aktualna.isBezpecna()) {
             System.out.println("8. Odpočinúť si");
         }
+        System.out.println("9. Uložiť hru");
+        System.out.println("10. Načítať hru");
 
-        int maxVolba = aktualna.isBezpecna() ? 8 : 7;
+        int maxVolba = aktualna.isBezpecna() ? 10 : 9;
         int volba = getNumericInput(1, maxVolba);
 
         // Riešenie volieb
         if (volba == 8 && aktualna.isBezpecna()) {
-            // 8 = Odpočinok
             Hrac hrac = playerManager.getHrac();
-            hrac.setZdravie(100); // alebo iný spôsob dopĺňania
+            hrac.setZdravie(100);
             System.out.println("Oddýchol si si. Zdravie doplnené!");
             return;
         }
-
         switch(volba) {
             case 1:
                 preskumajMiestnost();
@@ -94,6 +95,22 @@ public class MenuPrinter {
                 String odpoved = scanner.nextLine().toLowerCase();
                 if (odpoved.equals("a")) {
                     game.ukoncitHru();
+                }
+                break;
+            case 9:
+                try {
+                    saveLoadManager.ulozHru("save.txt");
+                    System.out.println("Hra bola úspešne uložená.");
+                } catch (Exception e) {
+                    System.out.println("Chyba pri ukladaní hry: " + e.getMessage());
+                }
+                break;
+            case 10:
+                try {
+                    saveLoadManager.nacitajHru("save.txt");
+                    System.out.println("Hra bola úspešne načítaná.");
+                } catch (Exception e) {
+                    System.out.println("Chyba pri načítaní hry: " + e.getMessage());
                 }
                 break;
         }

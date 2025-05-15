@@ -5,5 +5,6 @@ public enum TypMiestnosti {
     ODPOCIVADLO,
     POKLAD,
     VSTUP,
-    CHODBA
+    CHODBA,
+    HADANKOVA
 }

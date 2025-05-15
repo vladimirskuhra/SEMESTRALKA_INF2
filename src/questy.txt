@@ -19,3 +19,10 @@ pocet: 1
 minLevel: 5
 reward: Najlepšie brnenie
 ---
+názov: Hádankové dvere
+popis: Odpovedz správne na hádanku v miestnosti s dverami.
+predmet: Správna odpoveď na hádanku
+pocet: 1
+minLevel: 1
+reward: Liečivý elixír
+---

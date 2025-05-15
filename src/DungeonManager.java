@@ -27,6 +27,13 @@ public class DungeonManager {
         sklad.pridajPredmet(new Zbran("zbran2", "Gobliní tesák", "Ostrý zahnutý nôž", 8, 8));
         sklad.pridajPredmet(new Lektvar("lektvar2", "Silný liečivý elixír", "Liečivý elixír s intenzívnym účinkom", 30));
 
+        // Hádanková miestnosť s dverami
+        Miestnost hadankovaKomnata = new Miestnost("m10", "Hádanková komnata",
+                "Za dverami tejto zvláštnej miestnosti ťa čaká skúška rozumu.", TypMiestnosti.HADANKOVA);
+        HadankoveDvere hadankoveDvere = new HadankoveDvere("dvere1", "Hádankové dvere",
+                "Masívne dvere s hádankou vyrytú do kameňa.", hadankovaKomnata, battleSystem);
+        hadankovaKomnata.pridajPostavu(hadankoveDvere);
+
         Miestnost gobliniTab = new Miestnost("m4", "Gobliní tábor",
                 "Malá jaskyňa premenená na tábor goblinov. Vidieť niekoľko provizórnych lôžok a ohnisko.", TypMiestnosti.NEPRIATELIA);
         gobliniTab.pridajPostavu(new Goblin("goblin1", "Gobliní strážca", "Malý goblin so zúbkami", null, 30, 5, 2, battleSystem));
@@ -75,10 +82,11 @@ public class DungeonManager {
 
         sklad.pridajVychod("juh", obchod);
         sklad.pridajVychod("juhovýchod", gobliniTab);
-        sklad.pridajVychod("juh", chodba); // alternatívne, podľa mapy
+        sklad.pridajVychod("juh", chodba);
 
         gobliniTab.pridajVychod("západ", chodba);
         gobliniTab.pridajVychod("východ", tron);
+        gobliniTab.pridajVychod("juh", hadankovaKomnata);
 
         odpocivadlo.pridajVychod("sever", chodba);
         odpocivadlo.pridajVychod("východ", pavuciBrloh);
@@ -94,6 +102,8 @@ public class DungeonManager {
 
         wargDoupie.pridajVychod("západ", pavuciBrloh);
 
+        hadankovaKomnata.pridajVychod("sever", gobliniTab);
+
         // --- Pridanie všetkých miestností do zoznamu ---
         miestnosti.add(vstup);
         miestnosti.add(chodba);
@@ -104,6 +114,7 @@ public class DungeonManager {
         miestnosti.add(tron);
         miestnosti.add(pavuciBrloh);
         miestnosti.add(wargDoupie);
+        miestnosti.add(hadankovaKomnata);
 
         dungeon = new Dungeon(miestnosti);
         dungeon.nastavAktualnuMiestnost(vstup);
