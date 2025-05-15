@@ -7,13 +7,15 @@ public class MenuPrinter {
     private final DungeonManager dungeonManager;
     private final InteractionManager interactionManager;
     private final BattleSystem battleSystem;
+    private final QuestManager questManager; // PRIDANÉ
 
-    public MenuPrinter(Scanner scanner, PlayerManager pm, DungeonManager dm, InteractionManager im, BattleSystem bs) {
+    public MenuPrinter(Scanner scanner, PlayerManager pm, DungeonManager dm, InteractionManager im, BattleSystem bs, QuestManager qm) {
         this.scanner = scanner;
         this.playerManager = pm;
         this.dungeonManager = dm;
         this.interactionManager = im;
         this.battleSystem = bs;
+        this.questManager = qm; // PRIDANÉ
     }
 
     public void zobrazInfoOMiestnosti() {
@@ -48,19 +50,23 @@ public class MenuPrinter {
         System.out.println("3. Zobraziť stav postavy");
         System.out.println("4. Prejsť do inej miestnosti");
         System.out.println("5. Interagovať s postavou/predmetom");
-        System.out.println("6. Ukončiť hru");
+        System.out.println("6. Zobraziť aktívne questy");
+        System.out.println("7. Ukončiť hru");
+
         if (aktualna.isBezpecna()) {
-            System.out.println("7. Odpočinúť si");
+            System.out.println("8. Odpočinúť si");
         }
 
-            // ... ostatné ako predtým
-        int maxVolba = aktualna.isBezpecna() ? 7 : 6;
+        int maxVolba = aktualna.isBezpecna() ? 8 : 7;
         int volba = getNumericInput(1, maxVolba);
 
-        if (volba == 7 && aktualna.isBezpecna()) {
+        // Riešenie volieb
+        if (volba == 8 && aktualna.isBezpecna()) {
+            // 8 = Odpočinok
             Hrac hrac = playerManager.getHrac();
             hrac.setZdravie(100); // alebo iný spôsob dopĺňania
             System.out.println("Oddýchol si si. Zdravie doplnené!");
+            return;
         }
 
         switch(volba) {
@@ -80,6 +86,9 @@ public class MenuPrinter {
                 interactionManager.interaguj();
                 break;
             case 6:
+                questManager.zobrazAktivneQuesty(playerManager.getHrac());
+                break;
+            case 7:
                 System.out.println("\nNaozaj chceš ukončiť hru? (a/n)");
                 String odpoved = scanner.nextLine().toLowerCase();
                 if (odpoved.equals("a")) {

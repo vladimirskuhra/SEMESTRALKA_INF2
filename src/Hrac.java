@@ -1,6 +1,46 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Hrac extends Charakter {
+    private int level;
+    private int exp;
+    private int expNaLevel;
+    private List<Quest> aktivneQuesty;
+
     public Hrac(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana) {
         super(id, meno, popis, miestnost, zdravie, sila, obrana);
+        this.level = 1;
+        this.exp = 0;
+        this.expNaLevel = 100;
+        this.aktivneQuesty = new ArrayList<>();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public List<Quest> getAktivneQuesty() {
+        return aktivneQuesty;
+    }
+
+    public void prijmiQuest(Quest quest) {
+        aktivneQuesty.add(quest);
+        System.out.println("Prijal si úlohu: " + quest.getNazov());
+    }
+
+    public void pridajExp(int kolko) {
+        exp += kolko;
+        System.out.println("Získal si " + kolko + " skúseností. (Aktuálne: " + exp + "/" + expNaLevel + ")");
+        while (exp >= expNaLevel) {
+            exp -= expNaLevel;
+            level++;
+            expNaLevel += 50; // môžeš upraviť podľa potreby
+            System.out.println("LEVEL UP! Nový level: " + level);
+            zdravie += 10;
+            sila += 2;
+            obrana += 2;
+            System.out.println("Získal si: +10 zdravie, +2 sila, +2 obrana.");
+        }
     }
 
     @Override

@@ -5,9 +5,11 @@ import java.util.Scanner;
 public class BattleSystem {
     private final Scanner scanner;
     private final Random random = new Random();
+    private final QuestManager questManager; // <<< PRIDANÉ
 
-    public BattleSystem(Scanner scanner) {
+    public BattleSystem(Scanner scanner, QuestManager questManager) { // <<< ÚPRAVA KONŠTRUKTORA
         this.scanner = scanner;
+        this.questManager = questManager;
     }
 
     // Nová metóda pre boj s viacerými nepriateľmi
@@ -48,8 +50,15 @@ public class BattleSystem {
                         System.out.println(ciel.getMeno() + " bol porazený!");
                         ciel.dropDoMiestnosti(); // loot
                         nepriatelia.remove(ciel);
+
+                        // >>>>>>>> DOPLNENÉ: Kontrola questov po zabití nepriateľa!
+                        questManager.skontrolujSplneneQuesty(hrac);
+
                         if (nepriatelia.isEmpty()) {
                             System.out.println("Všetci nepriatelia boli porazení!");
+                            // >>>>>>>> DOPLNENÉ: Kontrola questov po skončení boja!
+                            questManager.skontrolujSplneneQuesty(hrac);
+                            questManager.zobrazAktivneQuesty(hrac);
                             return;
                         }
                     }
@@ -65,6 +74,7 @@ public class BattleSystem {
                     int hodKockou = random.nextInt(20) + 1;
                     if (hodKockou > 10) {
                         System.out.println("Úspešne si utiekol!");
+                        questManager.zobrazAktivneQuesty(hrac);
                         return;
                     } else {
                         System.out.println("Nepodarilo sa ti utiecť!");

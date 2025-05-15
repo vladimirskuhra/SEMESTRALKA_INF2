@@ -14,11 +14,11 @@ public class PlayerManager {
         System.out.print("Zadaj meno svojho dobrodruha: ");
         String menoHraca = scanner.nextLine();
 
-        hrac = new Hrac("hrac1", menoHraca, "Odvážny dobrodruh", null, 100, 10, 5, battleSystem);
+        hrac = new Hrac("hrac1", menoHraca, "Odvážny dobrodruh", null, 100, 10, 5);
 
         // Pridanie základnej výbavy
-        Predmet mec = new Zbran("zbran1", "Krátky meč", "Jednoduchý meč", 5);
-        Predmet stit = new Brnenie("brnenie1", "Kožená zbroj", "Jednoduchá kožená zbroj", 2);
+        Predmet mec = new Zbran("zbran1", "Krátky meč", "Jednoduchý meč", 5, 5);
+        Predmet stit = new Brnenie("brnenie1", "Kožená zbroj", "Jednoduchá kožená zbroj", 5, 2);
         Predmet lektvar = new Lektvar("lektvar1", "Liečivý elixír", "Malý liečivý elixír", 20);
 
         hrac.getInventar().pridajPredmet(mec);

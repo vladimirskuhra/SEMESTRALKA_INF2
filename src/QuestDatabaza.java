@@ -1,8 +1,12 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class QuestDatabaza {
-    private List<Quest> questy = new ArrayList<>();
+    private final List<Quest> questy = new ArrayList<>();
 
     public QuestDatabaza(String cestaKSuboru) {
         nacitajQuestyZoSuboru(cestaKSuboru);
@@ -27,7 +31,7 @@ public class QuestDatabaza {
                 } else if (riadok.startsWith("reward:")) {
                     reward = riadok.substring(7).trim();
                 } else if (riadok.equals("---")) {
-                    questy.add(new Quest(nazov, popis, predmet, pocet, minLevel, reward));
+                    this.questy.add(new Quest(nazov, popis, predmet, pocet, minLevel, reward));
                     nazov = popis = predmet = reward = null;
                     pocet = 0; minLevel = 1;
                 }
@@ -39,7 +43,7 @@ public class QuestDatabaza {
 
     public List<Quest> getQuestsPreLevel(int level) {
         List<Quest> vhodne = new ArrayList<>();
-        for (Quest q : questy) {
+        for (Quest q : this.questy) {
             if (q.getMinLevel() <= level) vhodne.add(q);
         }
         return vhodne;
@@ -53,6 +57,6 @@ public class QuestDatabaza {
     }
 
     public List<Quest> getVsetkyQuesty() {
-        return questy;
+        return this.questy;
     }
 }

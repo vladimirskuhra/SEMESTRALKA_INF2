@@ -1,10 +1,10 @@
 public class Quest {
-    private String nazov;
-    private String popis;
-    private String cielovyPredmet;
-    private int cielovyPocet;
-    private int minLevel;
-    private String reward;
+    private final String nazov;
+    private final String popis;
+    private final String cielovyPredmet;
+    private final int cielovyPocet;
+    private final int minLevel;
+    private final String reward;
     private boolean splneny = false;
 
     public Quest(String nazov, String popis, String cielovyPredmet, int cielovyPocet, int minLevel, String reward) {
@@ -16,18 +16,18 @@ public class Quest {
         this.reward = reward;
     }
 
-    public String getNazov() { return nazov; }
-    public String getPopis() { return popis; }
-    public String getCielovyPredmet() { return cielovyPredmet; }
-    public int getCielovyPocet() { return cielovyPocet; }
-    public int getMinLevel() { return minLevel; }
-    public String getReward() { return reward; }
-    public boolean isSplneny() { return splneny; }
+    public String getNazov() { return this.nazov; }
+    public String getPopis() { return this.popis; }
+    public String getCielovyPredmet() { return this.cielovyPredmet; }
+    public int getCielovyPocet() { return this.cielovyPocet; }
+    public int getMinLevel() { return this.minLevel; }
+    public String getReward() { return this.reward; }
+    public boolean isSplneny() { return this.splneny; }
     public void setSplneny(boolean splneny) { this.splneny = splneny; }
 
     @Override
     public String toString() {
-        return nazov + " | " + popis + " | Potrebné: " + cielovyPocet + "x " + cielovyPredmet +
-                " | Odmena: " + reward + " | Min. level: " + minLevel + (splneny ? " | SPLNENÉ" : "");
+        return this.nazov + " | " + this.popis + " | Potrebné: " + this.cielovyPocet + "x " + this.cielovyPredmet +
+                " | Odmena: " + this.reward + " | Min. level: " + this.minLevel + (this.splneny ? " | SPLNENÉ" : "");
     }
 }

@@ -1,24 +1,26 @@
-import javax.swing.text.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Obchodnik extends NPC {
+public class Obchodnik extends NPC implements InteraktivnaPostava {
     private List<Predmet> tovar;
     private QuestDatabaza questDatabaza;
+    private QuestManager questManager;
 
-    public Obchodnik(String id, String meno, String popis, Position pozicia, int zdravie, int sila, int obrana, QuestDatabaza databaza) {
-        super(id, meno, popis, pozicia, zdravie, sila, obrana);
+    public Obchodnik(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana, QuestDatabaza databaza, QuestManager questManager) {
+        super(id, meno, popis, miestnost, zdravie, sila, obrana);
         this.tovar = new ArrayList<>();
         vytvorTovar();
         this.questDatabaza = databaza;
+        this.questManager = questManager;
     }
 
+
     private void vytvorTovar() {
-        tovar.add(new Zbran("zbran_shop1", "Kvalitný meč", "Dobre vyvážený meč s ostrou čepeľou", 10));
-        tovar.add(new Zbran("zbran_shop2", "Bojová sekera", "Ťažká sekera schopná rozsekať brnenie", 12));
-        tovar.add(new Brnenie("brnenie_shop1", "Krúžková košeľa", "Kvalitné krúžkové brnenie", 8));
-        tovar.add(new Brnenie("brnenie_shop2", "Kovový štít", "Pevný štít chrániaci pred útokmi", 6));
+        tovar.add(new Zbran("zbran_shop1", "Kvalitný meč", "Dobre vyvážený meč s ostrou čepeľou",10,  10));
+        tovar.add(new Zbran("zbran_shop2", "Bojová sekera", "Ťažká sekera schopná rozsekať brnenie", 10, 12));
+        tovar.add(new Brnenie("brnenie_shop1", "Krúžková košeľa", "Kvalitné krúžkové brnenie", 50, 8 ));
+        tovar.add(new Brnenie("brnenie_shop2", "Kovový štít", "Pevný štít chrániaci pred útokmi", 6, 2 ));
         tovar.add(new Lektvar("lektvar_shop1", "Silný liečivý elixír", "Koncentrovaný liečivý nápoj", 40));
         tovar.add(new Lektvar("lektvar_shop2", "Elixír odolnosti", "Dočasne zvyšuje odolnosť", 30));
     }
@@ -29,8 +31,8 @@ public class Obchodnik extends NPC {
 
     @Override
     public void interakcia(Hrac hrac) {
-        System.out.println("\nGobliní obchodník " + getMeno() + " sa na teba škerí.");
-        System.out.println("\"Vitaj, dobrodruh! Čo by si rád kúpil alebo predal?\" pýta sa.");
+        System.out.println("\nObchodník " + getMeno() + " sa na teba škerí.");
+        System.out.println("\"Vitaj, dobrodruh! Čo by si rád kúpil alebo predal?\"");
 
         Scanner scanner = new Scanner(System.in);
         boolean obchodovanieAktivne = true;
@@ -41,25 +43,22 @@ public class Obchodnik extends NPC {
             System.out.println("2. Zobrať úlohu");
             System.out.println("3. Premeniť predmety za odmenu");
             System.out.println("4. Odísť od obchodníka");
-
+            System.out.println("5. Zobraziť moje aktívne úlohy");
             System.out.print("Tvoja voľba: ");
 
             try {
                 int volba = Integer.parseInt(scanner.nextLine());
 
                 switch (volba) {
-                    case 1:
-                        zobrazTovar(hrac);
-                        break;
-                    case 2:
-                        ponukniQuest(hrac);
-                        break;
-                    case 3:
-                        premienanePredmetov(hrac);
-                        break;
+                    case 1: zobrazTovar(hrac); break;
+                    case 2: ponukniQuest(hrac); break;
+                    case 3: premienanePredmetov(hrac); break;
                     case 4:
                         System.out.println("\"Príď zase, dobrodruh!\" lúči sa " + getMeno());
                         obchodovanieAktivne = false;
+                        break;
+                    case 5:
+                        questManager.zobrazAktivneQuesty(hrac);
                         break;
                     default:
                         System.out.println("\"Nerozumiem, čo chceš,\" vraví obchodník.");
@@ -111,7 +110,7 @@ public class Obchodnik extends NPC {
         Scanner scanner = new Scanner(System.in);
         String odpoved = scanner.nextLine().trim().toLowerCase();
         if (odpoved.equals("a")) {
-            hrac.prijmiQuest(quest);
+            questManager.pridajQuestPreHraca(hrac, quest);
         } else {
             System.out.println("Možno nabudúce!");
         }
@@ -123,10 +122,6 @@ public class Obchodnik extends NPC {
         System.out.println("\"Prines mi špecifické prísady z dungeonu a potom sa dohodneme.\"");
     }
 
-    @Override
-    public void pouzitie(Hrac hrac) {
-        System.out.println("Nemôžeš použiť obchodníka ako predmet.");
-    }
 
     @Override
     public void utok(Utocnik ciel) {
@@ -139,5 +134,10 @@ public class Obchodnik extends NPC {
     @Override
     public void obrana() {
         System.out.println(getMeno() + " sa skrýva za svojím pultom a volá o pomoc!");
+    }
+
+    @Override
+    public void prijmiZasah(int sila) {
+        System.out.println("Obchodník sa útoku vyhol!");
     }
 }

@@ -1,4 +1,3 @@
-// Abstraktná trieda pre všetky NPC postavy v hre.
 // Dedia z nej konkrétne typy: Nepriatel, Obchodnik, QuestGiver, atď.
 
 public abstract class NPC extends Charakter {
@@ -15,10 +14,6 @@ public abstract class NPC extends Charakter {
 
     // Ak niektoré NPC vie niečo použiť (napr. elixír na seba), môžeš to tu implementovať,
     // inak nechaj default (nič).
-
-    public void pouzitie(Hrac hrac) {
-        // Väčšina NPC štandardne nič nepoužíva
-    }
 
     // Ak je NPC útočná (napr. nepriateľ), bude overrideovať túto metódu;
     // pokojné NPC môže mať prázdnu implementáciu.

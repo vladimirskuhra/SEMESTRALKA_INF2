@@ -1,49 +1,60 @@
 import java.util.List;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class InteractionManager {
     private final Scanner scanner;
     private final PlayerManager playerManager;
     private final DungeonManager dungeonManager;
     private final BattleSystem battleSystem;
+    private final QuestManager questManager;
 
-    public InteractionManager(Scanner scanner, PlayerManager pm, DungeonManager dm, BattleSystem bs) {
+    public InteractionManager(Scanner scanner, PlayerManager pm, DungeonManager dm, BattleSystem bs, QuestManager qm) {
         this.scanner = scanner;
         this.playerManager = pm;
         this.dungeonManager = dm;
         this.battleSystem = bs;
+        this.questManager = qm;
     }
 
     public void interaguj() {
         Miestnost aktualna = dungeonManager.getDungeon().getAktualnaMiestnost();
-        List<Charakter> postavy = aktualna.getPostavy();
+        List<NPC> postavy = aktualna.getPostavy();
 
-        if (postavy.isEmpty()) {
-            System.out.println("V miestnosti nie je s čím interagovať.");
-            return;
-        }
-
-        System.out.println("\nS kým chceš interagovať?");
-        int zivychPostav = 0;
-
-        for (int i = 0; i < postavy.size(); i++) {
-            Charakter postava = postavy.get(i);
-            if (postava.getZdravie() > 0) {
-                System.out.println((i+1) + ". " + postava.getMeno());
-                zivychPostav++;
+        // Vyfiltruj len interaktívne postavy
+        List<InteraktivnaPostava> interaktivnePostavy = new ArrayList<>();
+        for (NPC postava : postavy) {
+            if (postava.getZdravie() > 0 && postava instanceof InteraktivnaPostava) {
+                interaktivnePostavy.add((InteraktivnaPostava) postava);
             }
         }
 
-        if (zivychPostav == 0) {
-            System.out.println("V miestnosti nie sú žiadne živé postavy.");
-            return;
+        if (interaktivnePostavy.isEmpty()) {
+            System.out.println("V miestnosti nie je žiadna postava, s ktorou by si mohol interagovať.");
+            System.out.println("Ak chceš, môžeš si zobraziť aktívne questy (vyber príslušnú možnosť).");
         }
 
-        System.out.print("\nTvoja voľba (0 pre návrat): ");
-        int volba = getNumericInput(0, postavy.size());
+        // Vypíš možnosti LEN pre interaktívne postavy
+        System.out.println("\nS kým chceš interagovať?");
+        for (int i = 0; i < interaktivnePostavy.size(); i++) {
+            // Každá interaktivnaPostava je zároveň Charakter, takže getMeno() je dostupné
+            Charakter postava = (Charakter) interaktivnePostavy.get(i);
+            System.out.println((i+1) + ". " + postava.getMeno());
+        }
+        System.out.println("0. Návrat");
+        System.out.println((interaktivnePostavy.size() + 1) + ". Zobraziť aktívne questy");
 
-        if (volba != 0) {
-            Charakter vybranaPostava = postavy.get(volba - 1);
+        System.out.print("\nTvoja voľba (0 pre návrat): ");
+        int volba = getNumericInput(0, interaktivnePostavy.size() + 1);
+
+        if (volba == 0) {
+            return;
+        } else if (volba == interaktivnePostavy.size() + 1) {
+            questManager.zobrazAktivneQuesty(playerManager.getHrac());
+            return;
+        } else {
+            // Vybraná je vždy interaktívna postava
+            InteraktivnaPostava vybranaPostava = interaktivnePostavy.get(volba - 1);
             vybranaPostava.interakcia(playerManager.getHrac());
         }
     }
