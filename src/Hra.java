@@ -4,7 +4,7 @@ public class Hra {
     private final Scanner scanner = new Scanner(System.in);
 
     // Najprv quest databáza a manager (musia byť pred BattleSystem!)
-    private final QuestDatabaza questDatabaza = new QuestDatabaza("questy.txt");
+    private final QuestDatabaza questDatabaza = new QuestDatabaza("src/questy.txt");
     private final QuestManager questManager = new QuestManager(questDatabaza);
 
     // BattleSystem potrebuje aj questManager
