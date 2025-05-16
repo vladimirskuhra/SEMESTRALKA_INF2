@@ -14,7 +14,7 @@ public class GoblinLukostrelec extends Nepriatel {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println(getMeno() + " niečo zamrmlal v goblinštine, ale nerozumieš mu.");
     }
 

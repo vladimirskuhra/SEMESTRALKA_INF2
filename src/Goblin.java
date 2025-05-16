@@ -1,21 +1,28 @@
 import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 
-public class Goblin extends Nepriatel {
+public class Goblin extends Nepriatel implements InteraktivnaPostava {
     public Goblin(String id, String meno, String popis, Miestnost miestnost, int zdravie, int sila, int obrana, double sancaNaZastrasenie) {
         super(id, meno, popis, miestnost, zdravie, sila, obrana, sancaNaZastrasenie);
-        // Môžeš pridať do inventára zbraň/prípadne iné predmety
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println(getMeno() + " na teba nepriateľsky zavrčí!");
         System.out.println("Goblin tasí svoju zbraň a chystá sa zaútočiť!");
-        // Tu môže byť logika na spustenie boja mimo tejto triedy, alebo iba info
+        // Spusti boj so všetkými nepriateľmi v miestnosti
+        List<Nepriatel> nepriateliaVMiestnosti = new ArrayList<>();
+        for (NPC npc : getMiestnost().getPostavy()) {
+            if (npc instanceof Nepriatel && npc.getZdravie() > 0) {
+                nepriateliaVMiestnosti.add((Nepriatel) npc);
+            }
+        }
+        battleSystem.boj(hrac, nepriateliaVMiestnosti);
     }
 
     @Override
     public void utok(Utocnik ciel) {
-        // Goblin útočí, použije aktívnu zbraň ak má, inak základnú silu
         int damage = sila;
         if (inventar.getAktivnaZbran() != null) {
             damage += inventar.getAktivnaZbran().getSila();
@@ -29,6 +36,5 @@ public class Goblin extends Nepriatel {
     @Override
     public void obrana() {
         System.out.println(getMeno() + " sa pripravuje na obranu!");
-        // Prípadne zvýšenie obrany na jedno kolo
     }
 }

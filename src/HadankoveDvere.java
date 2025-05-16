@@ -13,7 +13,7 @@ public class HadankoveDvere extends NPC implements InteraktivnaPostava {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println("Pred tebou sú dvoje dvere. Na dlážke ležia dva lístky:");
         System.out.println("Na prvom: 'Za týmito dverami sa nachádza warg.'");
         System.out.println("Na druhom: 'Za oboma dverami sa nachádza warg.'");

@@ -30,7 +30,7 @@ public class Obchodnik extends NPC implements InteraktivnaPostava {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println("\nObchodník " + getMeno() + " sa na teba škerí.");
         System.out.println("\"Vitaj, dobrodruh! Čo by si rád kúpil alebo predal?\"");
 

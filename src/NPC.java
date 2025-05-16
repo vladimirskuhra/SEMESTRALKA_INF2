@@ -10,7 +10,7 @@ public abstract class NPC extends Charakter {
 
     // Každé NPC musí polymorfne riešiť interakciu s hráčom
 
-    public abstract void interakcia(Hrac hrac);
+   public abstract void interakcia(Hrac hrac, BattleSystem battleSystem);
 
     // Ak niektoré NPC vie niečo použiť (napr. elixír na seba), môžeš to tu implementovať,
     // inak nechaj default (nič).

@@ -12,7 +12,7 @@ public class Pavuk extends Nepriatel {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println(getMeno() + " momentálne nemá náladu na rozprávanie.");
     }
 

@@ -1,3 +1,3 @@
 public interface InteraktivnaPostava {
-    void interakcia(Hrac hrac);
+    void interakcia(Hrac hrac, BattleSystem battleSystem);
 }

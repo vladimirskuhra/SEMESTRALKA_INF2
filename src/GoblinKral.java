@@ -12,7 +12,7 @@ public class GoblinKral extends Nepriatel implements InteraktivnaPostava {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println("Gobliní kráľ sa dvíha zo svojho trónu!");
         System.out.println("\"Ty sa opovažuješ vstúpiť do mojho kráľovstva, smrteľník?\" zreve na teba.");
         System.out.println("Jeho lukostrelci na teba mieria svojimi zbraňami.");

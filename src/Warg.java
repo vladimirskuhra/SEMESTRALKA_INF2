@@ -11,7 +11,7 @@ public class Warg extends Nepriatel {
     }
 
     @Override
-    public void interakcia(Hrac hrac) {
+    public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         System.out.println(getMeno() + " na teba vyceril svoje ostré zuby a hlboko zavrčal!");
         System.out.println("Obrovský vlku podobný tvor sa pripravuje na skok!");
 
