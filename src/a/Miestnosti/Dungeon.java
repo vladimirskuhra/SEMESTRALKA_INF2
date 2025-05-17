@@ -22,9 +22,6 @@ public class Dungeon {
         this.aktualnaMiestnost = miestnost;
     }
 
-    public void pridajMiestnost(Miestnost miestnost) {
-        this.miestnosti.add(miestnost);
-    }
 
     // Pohyb hráča podľa smeru, ak existuje východ tým smerom
     public boolean pohybPodlaSmeru(String smer) {
@@ -35,10 +32,5 @@ public class Dungeon {
         }
         System.out.println("Týmto smerom sa nedá ísť.");
         return false;
-    }
-
-
-    public void pohybDoMiestnosti(Miestnost novaMiestnost) {
-        this.aktualnaMiestnost = novaMiestnost;
     }
 }

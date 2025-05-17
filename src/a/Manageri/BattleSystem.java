@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class BattleSystem {
     private final Scanner scanner;
     private final Random random = new Random();
-    private final QuestManager questManager; // <<< PRIDANÉ
+    private final QuestManager questManager;
 
     public BattleSystem(Scanner scanner, QuestManager questManager) {
         this.scanner = scanner;
@@ -46,13 +46,13 @@ public class BattleSystem {
             System.out.println("3. Pokus o útek");
 
             System.out.print("Tvoja voľba: ");
-            int volba = getNumericInput(1, 3);
+            int volba = InputUtils.getNumericInput(this.scanner, 1, 3);
 
             switch (volba) {
                 case 1:
                     // Výber cieľa útoku
                     System.out.print("Vyber číslo nepriateľa na útok: ");
-                    int idx = getNumericInput(1, nepriatelia.size()) - 1;
+                    int idx = InputUtils.getNumericInput(this.scanner, 1, nepriatelia.size()) - 1;
                     Nepriatel ciel = nepriatelia.get(idx);
                     hrac.utok(ciel);
                     if (ciel.getZdravie() <= 0) {
@@ -141,27 +141,11 @@ public class BattleSystem {
         }
         System.out.println("0. Späť");
         System.out.print("Tvoja voľba: ");
-        int volba = getNumericInput(0, lektvary.size());
+        int volba = InputUtils.getNumericInput(this.scanner, 0, lektvary.size());
         if (volba == 0) return false;
         Lektvar lektvar = (Lektvar) lektvary.get(volba - 1);
         lektvar.pouzitie(hrac); // lektvar sa odstrani automaticky z invetnaru po pouziti, bomba fest
 
         return true;
-    }
-
-    private int getNumericInput(int min, int max) {
-        int volba = -1;
-        while (volba < min || volba > max) {
-            try {
-                String vstup = this.scanner.nextLine();
-                volba = Integer.parseInt(vstup);
-                if (volba < min || volba > max) {
-                    System.out.print("Zadaj číslo od " + min + " do " + max + ": ");
-                }
-            } catch (NumberFormatException e) {
-                System.out.print("Zadaj platné číslo: ");
-            }
-        }
-        return volba;
     }
 }

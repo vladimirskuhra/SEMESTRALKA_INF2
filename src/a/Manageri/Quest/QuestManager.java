@@ -10,10 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class QuestManager {
-    private final QuestDatabaza questDatabaza;
 
     public QuestManager(QuestDatabaza questDatabaza) {
-        this.questDatabaza = questDatabaza;
+
     }
 
     public boolean pridajQuestPreHraca(Hrac hrac, Quest quest) {
@@ -107,15 +106,4 @@ public class QuestManager {
         }
     }
 
-    public void zobrazVsetkyQuesty() {
-        List<Quest> vsetky = this.questDatabaza.getVsetkyQuesty();
-        if (vsetky.isEmpty()) {
-            System.out.println("V databáze nie sú žiadne questy.");
-            return;
-        }
-        System.out.println("Všetky questy:");
-        for (Quest q : vsetky) {
-            System.out.println(q);
-        }
-    }
 }

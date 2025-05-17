@@ -59,7 +59,6 @@ public class MenuPrinter {
     public void spracujAkciu(Hra game) {
         Miestnost aktualna = this.dungeonManager.getDungeon().getAktualnaMiestnost();
 
-
         List<NPC> postavy = aktualna.getPostavy();
         boolean suNepriatelia = false;
         for (NPC npc : postavy) {
@@ -93,8 +92,7 @@ public class MenuPrinter {
             next++;
         }
         int maxVolba = next - 1;
-        int volba = getNumericInput(1, maxVolba);
-
+        int volba = InputUtils.getNumericInput(this.scanner, 1, maxVolba);
 
         if ((aktualna instanceof Bezpecna) && volba == 8) {
             Hrac hrac = this.playerManager.getHrac();
@@ -115,20 +113,6 @@ public class MenuPrinter {
                 System.out.println("V miestnosti nie je žiadny nepriateľ na boj.");
                 return;
             }
-
-
-            /*
-            System.out.println("Vyber nepriateľa na útok:");
-            for (int i = 0; i < nepriatelia.size(); i++) {
-                System.out.println((i + 1) + ". " + nepriatelia.get(i).getMeno() +
-                                " (zdravie: " + nepriatelia.get(i).getZdravie() + ")");
-            }
-            System.out.println("0. Späť");
-            int vyber = getNumericInput(0, nepriatelia.size());
-            if (vyber == 0) return;
-            List<a.Postavy.NPC.Nepriatelia.Nepriatel> vybrany = List.of(nepriatelia.get(vyber - 1));
-            battleSystem.boj(hrac, vybrany);
-            */
 
             System.out.println("Začína boj so všetkými nepriateľmi v miestnosti!");
             this.battleSystem.boj(hrac, nepriatelia);
@@ -168,7 +152,6 @@ public class MenuPrinter {
                 if (aktualna instanceof Bezpecna) { // odpočinok
                     break;
                 }
-
             case 9:
                 try {
                     this.saveLoadManager.ulozHru("save.txt");
@@ -214,7 +197,7 @@ public class MenuPrinter {
 
         if (odpoved.equals("a")) {
             System.out.print("Ktorý predmet chceš použiť? (1-" + predmety.size() + "): ");
-            int index = getNumericInput(1, predmety.size()) - 1;
+            int index = InputUtils.getNumericInput(this.scanner, 1, predmety.size()) - 1;
             predmety.get(index).pouzitie(this.playerManager.getHrac());
         }
     }
@@ -239,7 +222,6 @@ public class MenuPrinter {
         }
     }
 
-
     private void zmenMiestnost() {
         Miestnost aktualna = this.dungeonManager.getDungeon().getAktualnaMiestnost();
         Map<String, Miestnost> vychody = aktualna.getVychody();
@@ -259,7 +241,7 @@ public class MenuPrinter {
         }
         System.out.println("0. Návrat");
 
-        int volba = getNumericInput(0, vychody.size());
+        int volba = InputUtils.getNumericInput(this.scanner, 0, vychody.size());
 
         if (volba != 0) {
             String smer = volby.get(volba);
@@ -268,21 +250,5 @@ public class MenuPrinter {
                 System.out.println("Presúvaš sa " + smer + " do miestnosti: " + this.dungeonManager.getDungeon().getAktualnaMiestnost().getMeno());
             }
         }
-    }
-
-    private int getNumericInput(int min, int max) {
-        int volba = -1;
-        while (volba < min || volba > max) {
-            try {
-                String vstup = this.scanner.nextLine();
-                volba = Integer.parseInt(vstup);
-                if (volba < min || volba > max) {
-                    System.out.print("Zadaj číslo od " + min + " do " + max + ": ");
-                }
-            } catch (NumberFormatException e) {
-                System.out.print("Zadaj platné číslo: ");
-            }
-        }
-        return volba;
     }
 }

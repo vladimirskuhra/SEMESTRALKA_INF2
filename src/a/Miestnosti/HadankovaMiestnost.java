@@ -13,7 +13,7 @@ public class HadankovaMiestnost extends Miestnost {
 
     public void interakcia(Hrac hrac, BattleSystem battleSystem) {
         // Predpokladáme, že v miestnosti je NPC HadankoveDvere
-        for (NPC postava : postavy) {
+        for (NPC postava : this.postavy) {
             if (postava instanceof HadankoveDvere) {
                 postava.interakcia(hrac, battleSystem);
                 return;

@@ -40,7 +40,7 @@ public class InteractionManager {
             System.out.println("Ak chceš, môžeš si zobraziť aktívne questy (vyber príslušnú možnosť).");
             System.out.println("0. Návrat");
             System.out.println("1. Zobraziť aktívne questy");
-            int volba = getNumericInput(0, 1);
+            int volba = InputUtils.getNumericInput(this.scanner, 0, 1);
             if (volba == 1) {
                 this.questManager.zobrazAktivneQuesty(this.playerManager.getHrac());
             }
@@ -56,7 +56,7 @@ public class InteractionManager {
         System.out.println((interaktivnePostavy.size() + 1) + ". Zobraziť aktívne questy");
 
         System.out.print("\nTvoja voľba (0 pre návrat): ");
-        int volba = getNumericInput(0, interaktivnePostavy.size() + 1);
+        int volba = InputUtils.getNumericInput(this.scanner, 0, interaktivnePostavy.size() + 1);
 
         if (volba == 0) {
         } else if (volba == interaktivnePostavy.size() + 1) {
@@ -65,21 +65,5 @@ public class InteractionManager {
             InteraktivnaPostava vybrana = (InteraktivnaPostava) interaktivnePostavy.get(volba - 1);
             vybrana.interakcia(this.playerManager.getHrac(), this.battleSystem);
         }
-    }
-
-    private int getNumericInput(int min, int max) {
-        int volba = -1;
-        while (volba < min || volba > max) {
-            try {
-                String vstup = this.scanner.nextLine();
-                volba = Integer.parseInt(vstup);
-                if (volba < min || volba > max) {
-                    System.out.print("Zadaj číslo od " + min + " do " + max + ": ");
-                }
-            } catch (NumberFormatException e) {
-                System.out.print("Zadaj platné číslo: ");
-            }
-        }
-        return volba;
     }
 }
