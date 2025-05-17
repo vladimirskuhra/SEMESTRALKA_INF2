@@ -1,0 +1,21 @@
+[HRAC]
+Vladko
+100
+10
+5
+1
+INVENTAR:Krátky meč,Kožená zbroj,Liečivý elixír,
+AKTIVNA_ZBRAN:Krátky meč
+AKTIVNE_BRNENIE:Kožená zbroj
+[QUESTY]
+[MIESTNOST]
+m1
+[MIESTNOSTI_PREDMETY]
+m3:Gobliní tesák,Silný liečivý elixír,
+[MIESTNOSTI_POSTAVY]
+m4:Gobliní strážca|30,Gobliní bojovník|40,
+m6:Grumli|50,
+m7:Gobliní kráľ|100,Gobliní lukostrelec|40,Gobliní lukostrelec|40,
+m8:Obrovský pavúk|60,
+m9:Divý warg|70,
+m10:Hádankové dvere|1,
