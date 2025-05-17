@@ -5,6 +5,20 @@ import a.Postavy.Hrac;
 
 import java.util.Scanner;
 
+/**
+ * OdpocivadloMiestnost je špeciálny typ miestnosti, kde si hráč môže bezpečne oddýchnuť a vyliečiť zranenia.
+ *
+ * Prečo je to takto navrhnuté:
+ * - Implementuje rozhranie Bezpecna – v tejto miestnosti nehrozí boj ani pasce.
+ * - V interakcii je hráčovi ponúknuté, či si chce oddýchnuť (odpočinok obnoví zdravie).
+ * - Ak hráč miestnosť prehľadáva, automaticky si oddýchne a obnoví zdravie.
+ * - Regenerácia zdravia je pevne nastavená (napr. +25 bodov), ale nikdy neprekročí maximum (100).
+ *
+ * OOP princípy:
+ * - Polymorfizmus: vlastná implementácia interakcie a prehľadávania pre tento typ miestnosti.
+ * - Zapúzdrenie: logika oddychu je uzavretá v privátnej metóde odpocinok().
+ * - Rozširiteľnosť: ak by si chcel iný spôsob liečenia alebo alternatívny efekt odpočinku, stačí upraviť odpocinok().
+ */
 public class OdpocivadloMiestnost extends Miestnost implements Bezpecna {
     public OdpocivadloMiestnost(String id, String meno, String popis) {
         super(id, meno, popis);
@@ -26,6 +40,9 @@ public class OdpocivadloMiestnost extends Miestnost implements Bezpecna {
         odpocinok(hrac);
     }
 
+    /**
+     * Obnoví hráčovi časť zdravia (maximálne do 100).
+     */
     private void odpocinok(Hrac hrac) {
         int maxZdravie = 100;
         int aktualneZdravie = hrac.getZdravie();
