@@ -17,114 +17,135 @@ import a.Predmety.Zbran;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DungeonManager je trieda zodpovedna za vytvaranie a spravu celeho dungeonu.
+ * Uklada zoznam miestnosti, vytvara mapu a umiestnuje postavy a predmety.
+ * V ramci polymorfizmu pouziva rozne typy miestnosti (Vstupna, Nepriatelska, atd.)
+ * Prepojenia: DungeonManager spolupracuje s BattleSystem, QuestDatabaza a QuestManager.
+ */
 public class DungeonManager {
     private Dungeon dungeon;
     private final BattleSystem battleSystem;
     private final QuestDatabaza questDatabaza;
     private final QuestManager questManager;
 
+    /**
+     * Konstruktor prijima odkazy na hlavne manazery, aby mohol vytvarat miestnosti a implementovat logiku hry.
+     */
     public DungeonManager(BattleSystem battleSystem, QuestDatabaza questDatabaza, QuestManager questManager) {
         this.battleSystem = battleSystem;
         this.questDatabaza = questDatabaza;
         this.questManager = questManager;
     }
 
+    /**
+     * Vrati referenciu na databazu questov.
+     */
     public QuestDatabaza getQuestDatabaza() {
         return this.questDatabaza;
     }
 
+    /**
+     * Metoda vytvori dungeon (mapu hry) s miestnostami, predmetmi a postavami.
+     * Priklady polymorfizmu: kazda miestnost je konkretna podtrieda Miestnost.
+     * Algoritmus:
+     * 1. Vytvori jednotlive miestnosti a ich objekty.
+     * 2. Prepoji miestnosti cez vychody.
+     * 3. Prida vsetky miestnosti do zoznamu a nastavi aktualnu miestnost.
+     */
     public void vytvorDungeon(Hrac hrac) {
         List<Miestnost> miestnosti = new ArrayList<>();
 
-        // Každá miestnosť je konkrétny typ (polymorfizmus)
+        // Vytvorenie miestnosti roznych typov (polymorfizmus)
         Miestnost vstup = new VstupnaMiestnost("m1", "Vstup do jaskyne",
-                "Stojíš pri vchode do temnej jaskyne. Zo stien kvapká voda a vzduch je vlhký.");
+                "Stojis pri vchode do temnej jaskyne. Zo stien kvapka voda a vzduch je vlhky.");
 
-        Miestnost chodba = new ChodbaMiestnost("m2", "Dlhá chodba",
-                "Dlhá tmavá chodba, osvetlená len niekoľkými fakľami. Na konci vidíš rozvetvenie.");
+        Miestnost chodba = new ChodbaMiestnost("m2", "Dlha chodba",
+                "Dlaha tmava chodba, osvetlena len niekolkymi faklami. Na konci vidis rozvetvenie.");
 
         Miestnost sklad = new PokladovaMiestnost("m3", "Sklad",
-                "Miestnosť plná bední a políc. Vyzerá to ako sklad goblinov.");
-        sklad.pridajPredmet(new Zbran("zbran2", "Gobliní tesák", "Ostrý zahnutý nôž", 8, 8));
-        sklad.pridajPredmet(new Lektvar("lektvar2", "Silný liečivý elixír", "Liečivý elixír s intenzívnym účinkom", 30));
+                "Miestnost plna bedni a polic. Vyzera to ako sklad goblinov.");
+        sklad.pridajPredmet(new Zbran("zbran2", "Goblin tesak", "Ostry zahnuty noz", 8, 8));
+        sklad.pridajPredmet(new Lektvar("lektvar2", "Silny liecivy elixir", "Lieciaci elixir s intenzivnym ucinkom", 30));
 
-        Miestnost hadankovaKomnata = new HadankovaMiestnost("m10", "Hádanková komnata",
-                "Za dverami tejto zvláštnej miestnosti ťa čaká skúška rozumu.");
-        HadankoveDvere hadankoveDvere = new HadankoveDvere("dvere1", "Hádankové dvere",
-                "Masívne dvere s hádankou vyrytú do kameňa.", hadankovaKomnata);
+        Miestnost hadankovaKomnata = new HadankovaMiestnost("m10", "Hadankova komnata",
+                "Za dverami tejto zvlastnej miestnosti ta caka skuska rozumu.");
+        // Hadankove dvere ako specialna NPC postava
+        HadankoveDvere hadankoveDvere = new HadankoveDvere("dvere1", "Hadankove dvere",
+                "Masivne dvere s hadankou vyrytou do kamena.", hadankovaKomnata);
         hadankovaKomnata.pridajPostavu(hadankoveDvere);
 
-        Miestnost gobliniTab = new NepriatelskaMiestnost("m4", "Gobliní tábor",
-                "Malá jaskyňa premenená na tábor goblinov. Vidieť niekoľko provizórnych lôžok a ohnisko.");
-        gobliniTab.pridajPostavu(new Goblin("goblin1", "Gobliní strážca", "Malý goblin so zúbkami", null, 30, 5, 2, 0.15));
-        gobliniTab.pridajPostavu(new Goblin("goblin2", "Gobliní bojovník", "Väčší goblin s rapkáňom", null, 40, 7, 3, 0.15));
+        Miestnost gobliniTab = new NepriatelskaMiestnost("m4", "Goblin tabor",
+                "Mala jaskyna premenena na tabor goblinov. Vidiet niekolko provizornych lozok a ohnisko.");
+        gobliniTab.pridajPostavu(new Goblin("goblin1", "Goblin strazca", "Maly goblin so zubkami", null, 30, 5, 2, 0.15));
+        gobliniTab.pridajPostavu(new Goblin("goblin2", "Goblin bojovnik", "Vacsi goblin s rapkanom", null, 40, 7, 3, 0.15));
 
-        Miestnost odpocivadlo = new OdpocivadloMiestnost("m5", "Tichá jaskyňa",
-                "Pokojná jaskyňa s malým potôčikom. Vyzerá to ako bezpečné miesto na odpočinok.");
+        Miestnost odpocivadlo = new OdpocivadloMiestnost("m5", "Ticha jaskyna",
+                "Pokojna jaskyna s malym potocikom. Vyzera to ako bezpecne miesto na odpocinok.");
 
-        Miestnost obchod = new ObchodnaMiestnost("m6", "Gobliní trh",
-                "Prekvapivo, v tejto jaskyni je malý gobliní trh. Jeden z goblinov vyzerá priateľsky.");
+        Miestnost obchod = new ObchodnaMiestnost("m6", "Goblin trh",
+                "Prekvapivo, v tejto jaskyni je maly goblin trh. Jeden z goblinov vyzera priatelsky.");
         obchod.pridajPostavu(
-                new Obchodnik("obchodnik1", "Grumli", "Starší gobliní obchodník", null, 50, 3, 10, this.questDatabaza, this.questManager)
+                new Obchodnik("obchodnik1", "Grumli", "Starsi goblin obchodnik", null, 50, 3, 10, this.questDatabaza, this.questManager)
         );
 
-        Miestnost tron = new NepriatelskaMiestnost("m7", "Trónna sieň",
-                "Veľká sieň s trónom z kostí. Na tróne sedí Gobliní kráľ, obklopený lukostrelcami.");
+        Miestnost tron = new NepriatelskaMiestnost("m7", "Tronna sien",
+                "Velka sien s tronom z kosti. Na trone sedi Goblin kral, obklopeny lukostrelcami.");
         tron.pridajPostavu(
-                new GoblinKral("boss1", "Gobliní kráľ", "Mohutný goblin s korunou a žezlom", null, 100, 15, 8, 0.07)
+                new GoblinKral("boss1", "Goblin kral", "Mohutny goblin s korunou a zezlom", null, 100, 15, 8, 0.07)
         );
         tron.pridajPostavu(
-                new GoblinLukostrelec("archer1", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, 0.2)
+                new GoblinLukostrelec("archer1", "Goblin lukostrelec", "Chudy goblin s lukom", null, 40, 10, 3, 0.2)
         );
         tron.pridajPostavu(
-                new GoblinLukostrelec("archer2", "Gobliní lukostrelec", "Chudý goblin s lukom", null, 40, 10, 3, 0.2)
+                new GoblinLukostrelec("archer2", "Goblin lukostrelec", "Chudy goblin s lukom", null, 40, 10, 3, 0.2)
         );
 
-        Miestnost pavuciBrloh = new NepriatelskaMiestnost("m8", "Pavúčí brloh",
-                "Jaskyňa pokrytá pavučinami. Zo stropu visia husté siete.");
+        Miestnost pavuciBrloh = new NepriatelskaMiestnost("m8", "Pavuci brloh",
+                "Jaskyna pokryta pavucinami. Zo stropu visia huste siete.");
         pavuciBrloh.pridajPostavu(
-                new Pavuk("pavuk1", "Obrovský pavúk", "Chĺpaty pavúk veľkosti psa", null, 60, 12, 4, 0.50)
+                new Pavuk("pavuk1", "Obrovsky pavuk", "Chlpata prisera velkosti psa", null, 60, 12, 4, 0.50)
         );
 
         Miestnost wargDoupie = new NepriatelskaMiestnost("m9", "Wargovsky brloh",
-                "Temná jaskyňa plná kostí a zvyškov koristi. Cítiš zápach šeliem.");
+                "Temna jaskyna plna kosti a zvyskov koristi. Citit zapach seliem.");
         wargDoupie.pridajPostavu(
-                new Warg("warg1", "Divý warg", "Veľký vlku podobný tvor s ostrými zubmi", null, 70, 14, 6, 0.15)
+                new Warg("warg1", "Divy warg", "Velky vlku podobny tvor s ostrymi zubami", null, 70, 14, 6, 0.15)
         );
 
-        // --- Prepojenie miestností cez východy (príklad mapy) ---
-        vstup.pridajVychod("východ", chodba);
+        // Prepojenie miestnosti cez vychody, vytvara mapu
+        vstup.pridajVychod("vychod", chodba);
 
-        chodba.pridajVychod("západ", vstup);
+        chodba.pridajVychod("zapad", vstup);
         chodba.pridajVychod("sever", sklad);
-        chodba.pridajVychod("východ", gobliniTab);
+        chodba.pridajVychod("vychod", gobliniTab);
         chodba.pridajVychod("juh", odpocivadlo);
 
         sklad.pridajVychod("sever", obchod);
-        sklad.pridajVychod("juhovýchod", gobliniTab);
+        sklad.pridajVychod("juhovychod", gobliniTab);
         sklad.pridajVychod("juh", chodba);
 
-        gobliniTab.pridajVychod("západ", chodba);
-        gobliniTab.pridajVychod("východ", tron);
+        gobliniTab.pridajVychod("zapad", chodba);
+        gobliniTab.pridajVychod("vychod", tron);
         gobliniTab.pridajVychod("juh", hadankovaKomnata);
 
         odpocivadlo.pridajVychod("sever", chodba);
-        odpocivadlo.pridajVychod("východ", pavuciBrloh);
+        odpocivadlo.pridajVychod("vychod", pavuciBrloh);
 
         obchod.pridajVychod("sever", sklad);
 
-        tron.pridajVychod("západ", gobliniTab);
+        tron.pridajVychod("zapad", gobliniTab);
         tron.pridajVychod("juh", pavuciBrloh);
 
-        pavuciBrloh.pridajVychod("západ", odpocivadlo);
+        pavuciBrloh.pridajVychod("zapad", odpocivadlo);
         pavuciBrloh.pridajVychod("sever", tron);
-        pavuciBrloh.pridajVychod("východ", wargDoupie);
+        pavuciBrloh.pridajVychod("vychod", wargDoupie);
 
-        wargDoupie.pridajVychod("západ", pavuciBrloh);
+        wargDoupie.pridajVychod("zapad", pavuciBrloh);
 
         hadankovaKomnata.pridajVychod("sever", gobliniTab);
 
-        // --- Pridanie všetkých miestností do zoznamu ---
+        // Pridanie vsetkych miestnosti do zoznamu
         miestnosti.add(vstup);
         miestnosti.add(chodba);
         miestnosti.add(sklad);
@@ -136,10 +157,14 @@ public class DungeonManager {
         miestnosti.add(wargDoupie);
         miestnosti.add(hadankovaKomnata);
 
+        // Vytvorenie objektu dungeon a nastavenie startovacej miestnosti
         this.dungeon = new Dungeon(miestnosti);
         this.dungeon.nastavAktualnuMiestnost(vstup);
     }
 
+    /**
+     * Vrati objekt Dungeon (obsahuje miestnosti, aktualnu miestnost a mapu).
+     */
     public Dungeon getDungeon() {
         return this.dungeon;
     }

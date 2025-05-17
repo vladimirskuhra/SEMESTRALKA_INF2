@@ -14,19 +14,42 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * SaveLoadManager je trieda zodpovedna za ukladanie a nacitavanie celeho stavu hry do/z suboru.
+ * Pomocou tejto triedy je mozne ulozit progres hraca, questy, stav miestnosti, predmetov a postav,
+ * a potom vsetko nacitat spat pri obnove hry.
+ *
+ * Preco je to takto navrhnute:
+ * - Vsetky podstatne objekty (hrac, dungeon, miestnosti) su spravovane cez managerov (DungeonManager, PlayerManager).
+ *   SaveLoadManager dostane tieto manageri v konstruktore, aby mal pristup k vsetkym potrebnym datam.
+ * - Ukladanie i nacitavanie je rozdelene do sekcii ([HRAC], [MIESTNOST] ...) aby bola struktura v subore prehladna,
+ *   a aby bola obnova stavu jednoduchsia a robustnejsia.
+ * - Pomocne metody na vyhladanie predmetu/questu podla mena zabezpecuju, ze objekty su pri nacitavani spravne vytvorene podla mena zo save suboru.
+ */
 public class SaveLoadManager {
     private final DungeonManager dungeonManager;
     private final PlayerManager playerManager;
 
+    /**
+     * Konstruktor - prepojenie na managerov (aby SaveLoadManager vedel manipulovat s dungeon aj hracom).
+     */
     public SaveLoadManager(DungeonManager dm, PlayerManager pm) {
         this.dungeonManager = dm;
         this.playerManager = pm;
     }
 
+    /**
+     * Ulozi aktualny stav hry do textoveho suboru.
+     * Ulozi vsetky klucove informacie: hraca, inventar, aktivne zbrane/brnenia, questy, stav miestnosti, predmetov, postav.
+     * Preco je to takto:
+     * - Zapisuje sa vsetko, co moze ovplyvnit stav hry po reloadnuti.
+     * - Pouziva sa jednoducha textova struktura s oddelovacmi (sekcie v hranatych zatvorkach).
+     */
     public void ulozHru(String fileName) throws IOException {
         try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) {
 
             Hrac hrac = this.playerManager.getHrac();
+            // Uloz hraca a jeho statistiky
             out.println("[HRAC]");
             out.println(hrac.getMeno());
             out.println(hrac.getZdravie());
@@ -34,29 +57,31 @@ public class SaveLoadManager {
             out.println(hrac.getObrana());
             out.println(hrac.getLevel());
 
+            // Uloz inventar
             out.print("INVENTAR:");
             for (Predmet p : hrac.getInventar().getPredmety()) {
                 out.print(p.getMeno() + ",");
             }
             out.println();
 
+            // Uloz info o aktivnej zbrani a brneni
             Predmet aktivnaZbran = hrac.getInventar().getAktivnaZbran();
             out.println("AKTIVNA_ZBRAN:" + (aktivnaZbran != null ? aktivnaZbran.getMeno() : ""));
 
             Predmet aktivneBrnenie = hrac.getInventar().getAktivneBrnenie();
             out.println("AKTIVNE_BRNENIE:" + (aktivneBrnenie != null ? aktivneBrnenie.getMeno() : ""));
 
-
+            // Uloz stav questov
             out.println("[QUESTY]");
             for (Quest q : hrac.getAktivneQuesty()) {
                 out.println(q.getNazov() + "|" + q.isSplneny());
             }
 
-
+            // Uloz aktualnu miestnost
             out.println("[MIESTNOST]");
             out.println(this.dungeonManager.getDungeon().getAktualnaMiestnost().getId());
 
-
+            // Uloz rozlozenie predmetov v miestnostiach
             out.println("[MIESTNOSTI_PREDMETY]");
             for (Miestnost m : this.dungeonManager.getDungeon().getMiestnosti()) {
                 if (!m.getPredmety().isEmpty()) {
@@ -68,7 +93,7 @@ public class SaveLoadManager {
                 }
             }
 
-
+            // Uloz stav postav v miestnostiach
             out.println("[MIESTNOSTI_POSTAVY]");
             for (Miestnost m : this.dungeonManager.getDungeon().getMiestnosti()) {
                 if (!m.getPostavy().isEmpty()) {
@@ -82,17 +107,27 @@ public class SaveLoadManager {
         }
     }
 
+    /**
+     * Nacita stav hry zo suboru a obnovi vsetky dolezite objekty
+     * (hrac, questy, inventar, aktualna miestnost, stav predmetov a postav).
+     * Preco je to takto:
+     * - Nacitava sa po sekciach, kazda sekcia je jasne oddelena v subore.
+     * - Pri nacitavani sa vyuzivaju pomocne metody na vyhladanie objektov podla mena,
+     *   aby sa obnovil spravny typ predmetu/questu.
+     */
     public void nacitajHru(String fileName) throws IOException {
         try (BufferedReader in = new BufferedReader(new FileReader(fileName))) {
             String line;
             Hrac hrac = this.playerManager.getHrac();
             Dungeon dungeon = this.dungeonManager.getDungeon();
+            // Pre rychle vyhladanie miestnosti podla ID
             Map<String, Miestnost> miestnostiMap = new HashMap<>();
             for (Miestnost m : dungeon.getMiestnosti()) {
                 miestnostiMap.put(m.getId(), m);
             }
 
             while ((line = in.readLine()) != null) {
+                // Nacitanie sekcie o hracovi
                 if (line.equals("[HRAC]")) {
                     hrac.setMeno(in.readLine());
                     hrac.setZdravie(Integer.parseInt(in.readLine()));
@@ -111,7 +146,7 @@ public class SaveLoadManager {
                             }
                         }
                     }
-                    // Aktívna zbraň
+                    // Nastavenie aktivnej zbrane
                     String zbranLine = in.readLine();
                     if (zbranLine.startsWith("AKTIVNA_ZBRAN:")) {
                         String meno = zbranLine.substring(14).trim();
@@ -120,7 +155,7 @@ public class SaveLoadManager {
                             if (zbran != null) hrac.getInventar().nastavAktivnuZbran((Zbran) zbran);
                         }
                     }
-                    // Aktívne brnenie
+                    // Nastavenie aktivneho brnenia
                     String brnenieLine = in.readLine();
                     if (brnenieLine.startsWith("AKTIVNE_BRNENIE:")) {
                         String meno = brnenieLine.substring(17).trim();
@@ -130,6 +165,7 @@ public class SaveLoadManager {
                         }
                     }
                 }
+                // Nacitanie questov
                 if (line.equals("[QUESTY]")) {
                     hrac.getAktivneQuesty().clear();
                     while ((line = in.readLine()) != null && !line.startsWith("[")) {
@@ -144,6 +180,7 @@ public class SaveLoadManager {
                         }
                     }
                 }
+                // Obnova aktualnej miestnosti
                 if (line.equals("[MIESTNOST]")) {
                     String miestnostId = in.readLine();
                     Miestnost aktualna = miestnostiMap.get(miestnostId);
@@ -151,6 +188,7 @@ public class SaveLoadManager {
                         dungeon.nastavAktualnuMiestnost(aktualna);
                     }
                 }
+                // Obnova predmetov v miestnostiach
                 if (line.equals("[MIESTNOSTI_PREDMETY]")) {
                     while ((line = in.readLine()) != null && !line.startsWith("[")) {
                         String[] parts = line.split(":");
@@ -169,6 +207,7 @@ public class SaveLoadManager {
                         }
                     }
                 }
+                // Obnova stavu postav v miestnostiach
                 if (line != null && line.equals("[MIESTNOSTI_POSTAVY]")) {
                     while ((line = in.readLine()) != null && !line.startsWith("[")) {
                         String[] parts = line.split(":");
@@ -197,10 +236,12 @@ public class SaveLoadManager {
     }
 
     /**
-     * Pomocná metóda – vytvor predmet podľa mena, podľa tvojej logiky.
+     * Pomocna metoda - na zaklade mena z textu vytvori prislusny objekt typu Predmet.
+     * Preco je to takto:
+     * - Umozni jednoduche rozsirene v buducnosti, len pridanim dalsieho case.
+     * - Pri nacitavani save suboru je jednoznacne, podla mena, vratena spravna instancia.
      */
     private Predmet NajdiPredmetPodlaMena(String meno) {
-
         switch (meno) {
             case "Gobliní tesák":
                 return new Zbran("zbran2", "Gobliní tesák", "Ostrý zahnutý nôž", 8, 8);
@@ -208,14 +249,17 @@ public class SaveLoadManager {
                 return new Lektvar("lektvar2", "Silný liečivý elixír", "Liečivý elixír s intenzívnym účinkom", 30);
             case "Liečivý elixír":
                 return new Lektvar("lektvar_hadanka", "Liečivý elixír", "Odmena za rozlúštenie hádanky.", 30);
-            // ... doplň ďalšie podľa potreby ...
+            // ... doplnime dalsie podla potreby ...
             default:
                 return null;
         }
     }
 
     /**
-     * Pomocná metóda – nájdi quest podľa názvu zo všetkých questov v databáze
+     * Pomocna metoda - podla nazvu quest vrat instanciu z databazy questov.
+     * Preco je to takto:
+     * - Vsetky questy su v QuestDatabaza, takto sa garantuje, ze sa nepomiesa objekt.
+     * - Ak quest v save subore neexistuje v databaze, jednoducho sa ignoruje.
      */
     private Quest najdiQuestPodlaNazvu(String nazov) {
         for (Quest q : this.dungeonManager.getQuestDatabaza().getVsetkyQuesty()) {
